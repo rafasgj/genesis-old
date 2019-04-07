@@ -1,5 +1,7 @@
-# Output files.
+# local management
+/issues/
 
+# Output files.
 *.pdf
 
 # LaTeX temporary files.
