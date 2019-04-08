@@ -1,0 +1,309 @@
+\input{presentations}
+
+\usecodingsamples{python}
+
+\loadtheme{apple_keynote_black}
+
+\title{Desenvolvendo Jogos com pygame}
+\subtitle{}
+\author{Rafael Guterres Jeffman}
+\institute{}
+\date{2019}
+
+\begin{document}
+
+%01
+\coverframe
+
+%02
+\begin{frame}
+    \frametitle{Desenvolver Jogos}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item É divertido.
+                \item Tu sempre quis fazer.
+                \item Foi a primeira coisa que tu fez com algo que parecia
+                um computador.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Não precisa ser difícil.
+                \item Não é fácil.
+                \item Tu quer mostrar pra todo mundo que tu consegue
+                desenvolver um jogo.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \begin{center}
+        \item {\Large \textbf{É muito divertido!}}
+    \end{center}
+\end{frame}
+
+%03
+\begin{frame}
+    \frametitle{Por que Python?}
+
+    \begin{itemize}
+        \item É divertido.
+        \item Permite que a preocupação seja o problema.
+        \item Faz com que tu aprenda uma linguagem que está sendo muito.
+        utilizada.
+    \end{itemize}
+\end{frame}
+
+%04
+\begin{frame}
+    \frametitle{pygame}
+
+    \begin{itemize}
+        \item Não é um engine de jogos.
+        \item É uma biblioteca de componentes.
+        \item É multi-plataforma (SDL).
+        \item Retira as parada chata da programação de jogos.
+    \end{itemize}
+\end{frame}
+
+%05
+\begin{frame}[fragile]
+    \frametitle{Hello World}
+
+    \begin{python}
+        import pygame
+        pygame.init()
+        # inicia tela
+        screen = pygame.display.set_mode((320,200))
+        pygame.display.set_caption("Hello World!")
+        # loop principal
+        running = True
+        while running:
+            # trata eventos
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            # atualiza objetos
+            # desenha objetos
+            # pygame usa double buffer!
+            pygame.display.update()
+    \end{python}
+\end{frame}
+
+%06
+\bigimage{images/moodboard.png}
+
+%07
+\begin{frame}
+    \frametitle{Every saga has a beginning!}
+    \hfill
+    \begin{center}
+    \large \textbf{Durante um teste de rotina, a nave Genesis é trasportada
+    através de um \textit{wormhole} para o quadrante \textit{gamma} da galáxia,
+    e precisa sobreviar à Guerra do Infinito.}
+
+    \hfill
+    \large\textbf{O que era um dia de testes virou uma luta pela sobrevivência.}
+    \end{center}
+    \hfill
+\end{frame}
+
+%08
+\begin{frame}[fragile]
+    \frametitle{A janela da aplicação}
+
+    \begin{itemize}
+        \item Aplipações pygame podem usar o modo janela ou \textit{fullscreen}.
+        \item No modo \textit{fullscreen}, o tamanho da janela é a sua resolução.
+    \end{itemize}
+    \begin{python}
+    width, height = size = (800, 600)
+    flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
+    screen = pygame.display.set_mode(size, flags)
+    \end{python}
+\end{frame}
+
+%09
+\begin{frame}[fragile]
+    \frametitle{Desenhando na tela}
+    \begin{itemize}
+        \item A estrutura criada pela função \texttt{display.set\_mode} é uma
+        superfície, que utilizamos para desenhar na tela.
+        \item Esta estrutura pode ser utilizada com o módulo \texttt{pygame.draw}.
+    \end{itemize}
+    \hfill
+    \begin{python}
+        python.draw.circle(screen, red, (100,100), 50)
+        python.draw.polygon(screen, white, point_list)
+        python.draw.rect(screen, white, (x, y, rect_w, rect_h))
+    \end{python}
+\end{frame}
+
+%10
+\begin{frame}
+    \frametitle{Um campo de estrelas}
+
+    \begin{itemize}
+        \item Um campo de estrelas com três planos pode ser criado com círculos
+        que se movem com velocidades diferentes.
+        \item \textit{List comprehensions} são muito úteis para isso.
+    \end{itemize}
+\end{frame}
+
+%11
+\begin{frame}[fragile]
+    \frametitle{Um campo de estrelas - Criação}
+
+    \begin{python}
+    def create_star(x):
+        y = randint(0, height)
+        speed = choice([1, 2, 3])
+        magnitude = choice([1, 2, 3])
+        color = (coice(100, 200, 250),) * 3
+        return (x, y, speed, magnitude, color)
+
+    stars = [create_star(randint(0, width)) for star in range(count)]
+    \end{python}
+\end{frame}
+
+%12
+\begin{frame}[fragile]
+    \frametitle{Um campo de estrelas - Movimentação}
+
+    \begin{python}
+    stars = [[x - speed, y, speed, mag, color]
+             if x - speed > 0
+             else create_star(width)
+             for x, y, speed, mag, color in stars]
+    \end{python}
+\end{frame}
+
+%13
+\bigimage{images/starfield.png}
+
+%14
+\begin{frame}
+    \frametitle{Sprites}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%12
+\begin{frame}
+    \frametitle{Respondendo a eventos}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%13
+\begin{frame}
+    \frametitle{Sprites com animação}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%14
+\begin{frame}
+    \frametitle{Objetos em Escala}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%15
+\begin{frame}
+    \frametitle{Efeitos especiais}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%16
+\begin{frame}
+    \frametitle{Disparos}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%17
+\begin{frame}
+    \frametitle{Tratamento de Colisões}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%18
+\begin{frame}
+    \frametitle{Vida e morte no espaço}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%19
+\begin{frame}
+    \frametitle{Escrevendo na tela}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%19
+\begin{frame}
+    \frametitle{Um pouco de som}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%20
+\begin{frame}
+    \frametitle{Quão produtivo é o pygame?}
+
+    \begin{itemize}
+        \item A first level items.
+        \item Another first level items.
+    \end{itemize}
+\end{frame}
+
+%21
+\bigtext{Essa palestra e esse jogo foram (re)feitos em 48h.}
+
+%22
+\bigtext{E eu dormi... ;-)}
+
+%23
+\bigtext{\url{https://pygame.org}}
+
+%24
+\finalframe[Obrigado!]{
+    \url{mailto:rafasgj@gmail.com}\\
+    \url{https://rafaeljeffman.com/tchelinux}
+}
+
+\end{document}
