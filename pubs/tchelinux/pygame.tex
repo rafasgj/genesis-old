@@ -96,16 +96,16 @@
 %07
 \begin{frame}
     \frametitle{Every saga has a beginning!}
-    \hfill
+    \vfill
     \begin{center}
     \large \textbf{Durante um teste de rotina, a nave Genesis é trasportada
     através de um \textit{wormhole} para o quadrante \textit{gamma} da galáxia,
     e precisa sobreviar à Guerra do Infinito.}
 
-    \hfill
+    \vfill
     \large\textbf{O que era um dia de testes virou uma luta pela sobrevivência.}
     \end{center}
-    \hfill
+    \vfill
 \end{frame}
 
 %08
@@ -131,7 +131,7 @@
         superfície, que utilizamos para desenhar na tela.
         \item Esta estrutura pode ser utilizada com o módulo \texttt{pygame.draw}.
     \end{itemize}
-    \hfill
+    \vfill
     \begin{python}
         python.draw.circle(screen, red, (100,100), 50)
         python.draw.polygon(screen, white, point_list)
@@ -186,12 +186,63 @@
     \frametitle{Sprites}
 
     \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
+        \item Sprites são imagens 2D, mas nos jogos, eles tem movimento.
+        \item O uso de sprites facilita a definição dos objetos móveis
+        do jogo.
+        \item Sprites, normalmente, tem suporte a transparência.
     \end{itemize}
 \end{frame}
 
-%12
+%15
+\bigimage{images/f18-big.png}
+
+%16
+\begin{frame}
+    \frametitle{Sprites com animação}
+
+    \begin{itemize}
+        \item pygame suporta imagens GIF, mas sem animação.
+        \item pygame oferece diversos plugins que podem ser utilizados.
+        \item Obviamente, existe um plugin para GIF animado.
+        \item Mais óbvio ainda... ele estava abandonado e não funcionava...
+    \end{itemize}
+\end{frame}
+
+%17
+\begin{frame}
+    \begin{columns}
+        \begin{column}{0.3\textwidth}
+            \includegraphics[width=3cm]{images/out0000.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0003.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0006.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0009.png}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \includegraphics[width=3cm]{images/out0001.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0004.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0007.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0010.png}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \includegraphics[width=3cm]{images/out0002.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0005.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0008.png}
+            \vfill
+            \includegraphics[width=3cm]{images/out0011.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+%18
 \begin{frame}
     \frametitle{Respondendo a eventos}
 
@@ -201,27 +252,7 @@
     \end{itemize}
 \end{frame}
 
-%13
-\begin{frame}
-    \frametitle{Sprites com animação}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%14
-\begin{frame}
-    \frametitle{Objetos em Escala}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%15
+%19
 \begin{frame}
     \frametitle{Efeitos especiais}
 
@@ -231,7 +262,7 @@
     \end{itemize}
 \end{frame}
 
-%16
+%20
 \begin{frame}
     \frametitle{Disparos}
 
