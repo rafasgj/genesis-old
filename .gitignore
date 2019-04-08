@@ -126,3 +126,5 @@ ENV/
 # OS files
 .DS_Store
 
+# Overrides
+!/engine/lib/
