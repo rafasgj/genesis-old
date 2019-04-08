@@ -1,10 +1,17 @@
 """The base game class."""
 
 import pygame
+from enum import Enum, auto
 
 
 class Game:
     """The base game class."""
+
+    class Event(Enum):
+        """Enumerate all public game events."""
+
+        KEYDOWN = auto()
+        KEYUP = auto()
 
     @classmethod
     def __ignore_event(*args, **kwargs):
@@ -30,18 +37,20 @@ class Game:
             pygame.K_ESCAPE: lambda e: self.stop(),
         }
 
-    def stop(self):
+    def stop(self, *args, **kwargs):
         """Stop running the game."""
         self.running = False
 
     def __keydown(self, event):
         """Handle keyboard press events."""
         if event.key != pygame.K_ESCAPE:
-            self.__keymap.get(event.key, Game.__ignore_event)(Game.KEYDOWN)
+            fn = self.__keymap.get(event.key, Game.__ignore_event)
+            fn(Game.Event.KEYDOWN)
 
     def __keyup(self, event):
         """Handle keyboard release events."""
-        self.__keymap.get(event.key, Game.__ignore_event)(Game.KEYUP)
+        fn = self.__keymap.get(event.key, Game.__ignore_event)
+        fn(Game.Event.KEYUP)
 
     def run(self):
         """Start the game loop."""
