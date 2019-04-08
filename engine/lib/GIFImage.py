@@ -22,7 +22,7 @@ class GIFImage(object):
         self.cur = 0
         self.ptime = time()
         self.running = True
-        self.breakpoint = len(self.frames)-1
+        self.breakpoint = len(self.frames) - 1
         self.startpoint = 0
         self.reversed = False
         self.pos = pos
@@ -35,7 +35,7 @@ class GIFImage(object):
         image = self.image
 
         pal = image.getpalette()
-        palette = [[pal[j] for j in range(i, i+3)]
+        palette = [[pal[j] for j in range(i, i + 3)]
                    for i in range(0, len(pal), 3)]
 
         all_tiles = []
@@ -45,7 +45,7 @@ class GIFImage(object):
                     image.seek(0)
                 else:
                     all_tiles.append(image.tile[0][3][0])
-                image.seek(image.tell()+1)
+                image.seek(image.tell() + 1)
         except EOFError:
             image.seek(0)
 
@@ -78,10 +78,10 @@ class GIFImage(object):
                 if cons:
                     for i in self.frames:
                         pi2.blit(i[0], (0, 0))
-                pi2.blit(pi, (x0, y0), (x0, y0, x1-x0, y1-y0))
+                pi2.blit(pi, (x0, y0), (x0, y0, x1 - x0, y1 - y0))
 
                 self.frames.append([pi2, duration])
-                image.seek(image.tell()+1)
+                image.seek(image.tell() + 1)
         except EOFError:
             pass
 
@@ -138,7 +138,7 @@ class GIFImage(object):
         self.seek(self.startpoint)
 
     def __fastforward(self):
-        self.seek(self.length()-1)
+        self.seek(self.length() - 1)
 
     def get_height(self):
         """Get image height."""
