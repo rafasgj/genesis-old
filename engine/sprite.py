@@ -22,7 +22,7 @@ class Sprite(object):
                 self.__image = pygame.transform.scale(self.__image, scale)
                 self.__image = pygame.transform.rotate(self.__image, rotate)
         self.__speed = speed
-        self.__movement = (0, 0)
+        self.move = (0, 0)
         self.__animate = animate
         self.__visible = True
 
@@ -36,7 +36,7 @@ class Sprite(object):
     def update(self):
         """Update sprite position."""
         x, y = self.__pos
-        dx, dy = self.__movement
+        dx, dy = self.move
         speed = self.__speed
         self.__pos = (x + dx * speed, y + dy * speed)
 
