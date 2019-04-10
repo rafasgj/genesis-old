@@ -6,6 +6,8 @@ from engine.game import Game
 from engine.window import Window
 from engine.sprite import Sprite
 from starfield import Starfield
+from objects.enemy import Enemy, Wave
+from random import randrange
 
 import pygame
 pygame.init()
@@ -13,7 +15,6 @@ pygame.init()
 
 def move(event):
     """Move player with directional keys."""
-    print(event.key)
     keys = pygame.key.get_pressed()
     dx, dy = 0, 0
     dy = -1 if keys[pygame.K_UP] else 0
@@ -24,18 +25,25 @@ def move(event):
 
 
 if __name__ == "__main__":
-    window = Window()
-    game = Game(fps=config.fps).set_window(window)
+    game = Game(fps=config.fps)
+    game.window = Window()
+    width, height = game.window.size
 
     game.on_key((pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
                 move)
 
-    game.add_object(Starfield(window.size))
+    game.add_object(Starfield(game.window.size))
+
+    ufo = Enemy((width, height), 'media/images/ufo_spin.gif', randrange(5),
+                animate=True)
 
     player = Sprite('media/images/f18.png', (200, 400))
     game.add_object(player)
     game.add_object(Sprite('media/images/ufo_big.gif', (600, 100), scale=0.8))
-    game.add_object(Sprite('media/images/ufo_spin.gif', (400, 500),
-                    animated=True))
+    # for e in range(10):
+    #     ufo = Enemy((width, height), 'media/images/ufo_spin.gif', randrange(5),
+    #                 animate=True)
+    #     game.add_object(ufo)
+    game.add_object(Wave(6, 5, (width, height)))
 
     game.run()

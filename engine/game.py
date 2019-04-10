@@ -27,7 +27,7 @@ class Game:
             pygame.KEYUP: self.__keyup,
         }
         self.__keymap = {
-            pygame.K_ESCAPE: lambda e: self.stop(),
+            pygame.K_ESCAPE: self.stop,
         }
 
     def stop(self, *args, **kwargs):
@@ -78,11 +78,16 @@ class Game:
                 self.__keymap[k] = responder
         return self
 
-    def set_window(self, w):
+    @property
+    def window(self):
+        """Retrieve the game window"""
+        return self.__window
+
+    @window.setter
+    def window(self, w):
         """Set the game window, if not set. It is a write-only property."""
         if not hasattr(self, "__window"):
             self.__window = w
-        return self
 
     def add_object(self, object):
         """Add a game object to this game."""

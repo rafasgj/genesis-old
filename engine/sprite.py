@@ -28,26 +28,27 @@ class Sprite(object):
 
     def draw(self, screen):
         """Draw the sprite to the screen."""
+        pos = list(map(int, self.position))
         if self.__animate:
-            self.__image.draw(screen, self.__pos)
+            self.__image.draw(screen, pos)
         else:
-            screen.blit(self.__image, self.__pos)
+            screen.blit(self.__image, pos)
 
     def update(self):
         """Update sprite position."""
         x, y = self.__pos
         dx, dy = self.move
-        speed = self.__speed
-        self.__pos = (x + dx * speed, y + dy * speed)
+        self.__pos = (x + dx, y + dy)
 
-    def limits(self, window):
-        """Ensure sprite in within limits."""
-        w, h = window
-        a, b = self.__image.get_size()
-        x, y = self.__pos
-        x = 0 if x < 0 else w - a if x > w - a else x
-        y = 0 if y < 0 else h - b if y > h - b else y
-        self.__pos = (x, y)
+    @property
+    def position(self):
+        """Retrieve the current sprite position."""
+        return self.__pos
+
+    @position.setter
+    def position(self, pos):
+        """Retrieve the current sprite position."""
+        self.__pos = pos
 
     @property
     def center(self):
@@ -67,6 +68,11 @@ class Sprite(object):
     def length(self):
         """Return the time needed to draw the animation."""
         return self.__image.duration() if self.__animate else 0
+
+    @property
+    def speed(self):
+        """Return the sprite speed."""
+        return self.__speed
 
     def hide(self):
         """Set Game Object to invisible."""
