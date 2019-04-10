@@ -40,10 +40,6 @@ if __name__ == "__main__":
     player = Sprite('media/images/f18.png', (200, 400))
     game.add_object(player)
     game.add_object(Sprite('media/images/ufo_big.gif', (600, 100), scale=0.8))
-    # for e in range(10):
-    #     ufo = Enemy((width, height), 'media/images/ufo_spin.gif', randrange(5),
-    #                 animate=True)
-    #     game.add_object(ufo)
     game.add_object(Wave(6, 5, (width, height)))
 
     game.run()
