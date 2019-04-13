@@ -4,6 +4,7 @@ from config import config
 from engine.game import Game
 from engine.window import Window
 from engine.sprite import Sprite
+from engine.gameobject import GameObject
 from objects.starfield import Starfield
 from objects.enemy import Enemy, Wave
 from objects.asteroid import Asteroid
@@ -39,7 +40,8 @@ if __name__ == "__main__":
     ufo = Enemy((width, height), 'media/images/ufo_spin.gif',
                 controller, animate=True)
 
-    player = Sprite('media/images/f18.png', (200, 400))
+    player = Sprite('media/images/f18.png', (200, 400),
+                    priority=GameObject.Priority.NPC)
     game.add_object(player)
     game.add_object(Sprite('media/images/ufo_big.gif', (600, 100), scale=0.8))
     # game.add_object(Wave(6, lambda: SinController(width, 5, 50, 5), size))

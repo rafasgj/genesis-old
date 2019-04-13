@@ -16,6 +16,7 @@ class Starfield(GameObject):
 
     def __init__(self, size, count=300):
         """Create the starfield stars."""
+        GameObject.__init__(self, GameObject.Priority.BACKGROUND)
         self.__width, self.__height = size
         self.__stars = [self.__create_star(randrange(0, self.__width - 1))
                         for star in range(count)]

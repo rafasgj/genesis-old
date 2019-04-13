@@ -2,19 +2,22 @@
 
 import pygame
 from .lib.GIFImage import GIFImage
+from .gameobject import GameObject
 
 
-class Sprite(object):
+class Sprite(GameObject):
     """Define a game sprite."""
 
-    def __init__(self, image, pos, speed=1, animate=False, **kwargs):
+    def __init__(self, image, pos, speed=1, animate=False, **kw):
         """Initialize a sprite object."""
+        GameObject.__init__(self, kw.get('priority',
+                                         GameObject.Priority.DEFAULT))
         self.__pos = pos
         if animate:
-            self.__image = GIFImage(image, **kwargs)
+            self.__image = GIFImage(image, **kw)
         else:
-            scale = kwargs.get('scale', 1)
-            rotate = kwargs.get('rotate', 0)
+            scale = kw.get('scale', 1)
+            rotate = kw.get('rotate', 0)
             self.__image = pygame.image.load(image)
             if scale != 1:
                 w, h = self.__image.get_size()

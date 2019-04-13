@@ -48,6 +48,13 @@ class Game:
 
     def run(self):
         """Start the game loop."""
+        def list_reverse(lst):
+            c = len(lst)
+            while c > 0:
+                c -= 1
+                yield lst[c]
+            raise StopIteration
+
         self.running = True
         while self.running:
             # handle events
@@ -58,7 +65,7 @@ class Game:
                 object.update()
             # draw objects
             self.__window.clear()
-            for object in self.__game_objects:
+            for object in list_reverse(self.__game_objects):
                 self.__window.draw(object)
             # swap buffers
             pygame.display.update()
@@ -96,3 +103,5 @@ class Game:
             if not (hasattr(object, 'update') and hasattr(object, 'draw')):
                 raise ValueError("Game objects must have update() and draw().")
             self.__game_objects.append(object)
+            self.__game_objects = sorted(self.__game_objects,
+                                         key=lambda obj: obj.priority)

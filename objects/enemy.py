@@ -11,15 +11,16 @@ class Enemy(Controllable, GameObject):
 
     def __init__(self, canvas_size, image, controller=None, animate=False):
         """Initialize Enemy object."""
+        Controllable.__init__(self, controller)
+        GameObject.__init__(self, GameObject.Priority.NPC)
         x, y = canvas_size
         sy = randint(50, y - 50)
         self.sprite = Sprite(image, (x, sy), animate=animate, cast_shadow=True)
-        self.behavior = controller
 
     def update(self):
         """Update enemy position."""
         try:
-            dx, dy = next(self.behavior)
+            dx, dy = next(self.controller)
             dx *= -1
             self.sprite.move = (dx, dy)
         except Exception as e:

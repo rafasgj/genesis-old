@@ -11,3 +11,7 @@ class Controllable:
     def update(self):
         """Update the object based on its controller."""
         self.movement = self.__controller.next_move()
+
+    @property
+    def controller(self):
+        return self.__controller
