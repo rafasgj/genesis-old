@@ -1,6 +1,7 @@
 """The base game class."""
 
 import pygame
+from .gameobject import GameObject
 
 
 class Game:
@@ -89,7 +90,7 @@ class Game:
         if not hasattr(self, "__window"):
             self.__window = w
 
-    def add_object(self, object):
+    def add_object(self, object: GameObject):
         """Add a game object to this game."""
         if object is not None:
             if not (hasattr(object, 'update') and hasattr(object, 'draw')):

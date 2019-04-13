@@ -3,9 +3,10 @@
 from engine.sprite import Sprite
 from random import randint
 from engine.behaviors import Controllable
+from engine.gameobject import GameObject
 
 
-class Enemy(Controllable):
+class Enemy(Controllable, GameObject):
     """Models a simple NPC."""
 
     def __init__(self, canvas_size, image, controller=None, animate=False):

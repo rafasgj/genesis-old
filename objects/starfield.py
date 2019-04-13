@@ -2,9 +2,10 @@
 
 from random import randrange, choice
 import pygame
+from engine.gameobject import GameObject
 
 
-class Starfield(object):
+class Starfield(GameObject):
     """Define a starfield background, with parallax."""
 
     def __create_star(self, x):

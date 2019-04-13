@@ -1,7 +1,7 @@
 """Implement behaviors for game objects."""
 
 
-class Controlable:
+class Controllable:
     """A controlable object is one that ask for a next movement delta."""
 
     def __init__(self, controller):
