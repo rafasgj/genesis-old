@@ -1,19 +1,19 @@
 """Genesis: The Game."""
 
 from config import config
-
 from engine.game import Game
 from engine.window import Window
 from engine.sprite import Sprite
-from starfield import Starfield
+from objects.starfield import Starfield
 from objects.enemy import Enemy, Wave
-from random import randrange
+from objects.asteroid import Asteroid
+from controllers import SinController
 
 import pygame
 pygame.init()
 
 
-def move(event):
+def player_move(event):
     """Move player with directional keys."""
     keys = pygame.key.get_pressed()
     dx, dy = 0, 0
@@ -27,19 +27,23 @@ def move(event):
 if __name__ == "__main__":
     game = Game(fps=config.fps)
     game.window = Window()
-    width, height = game.window.size
+    width, height = size = game.window.size
 
     game.on_key((pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-                move)
+                player_move)
 
     game.add_object(Starfield(game.window.size))
 
-    ufo = Enemy((width, height), 'media/images/ufo_spin.gif', randrange(5),
-                animate=True)
+    controller = SinController(width, 5, 50, 5)
+    # controller = InvertedSigmoidController(width, 100, speed=5)
+    ufo = Enemy((width, height), 'media/images/ufo_spin.gif',
+                controller, animate=True)
 
     player = Sprite('media/images/f18.png', (200, 400))
     game.add_object(player)
     game.add_object(Sprite('media/images/ufo_big.gif', (600, 100), scale=0.8))
-    game.add_object(Wave(6, 5, (width, height)))
+    # game.add_object(Wave(6, lambda: SinController(width, 5, 50, 5), size))
+    game.add_object(Asteroid((width, height // 2), 0.5))
+    game.add_object(ufo)
 
     game.run()

@@ -1,50 +1,29 @@
 """Models a simple NPC."""
 
-from math import exp
 from engine.sprite import Sprite
-from random import random, randint
+from random import randint
+from engine.behaviors import Controllable
 
 
-def __get_sigmoid_derivative(self, size, amplitude, **kwargs):
-    temperature = kwargs.get('temperature', 1)
-    width = size[0]
-    factor = 20 / width
-    x, _ = self.position
-    x = (x * factor) - 10
-    ex = 1 / (exp(-x / temperature) + 1)
-    return 4 * (ex * (1 - ex))
-
-
-def sigmoid(self, size, amplitude, **kwargs):
-    """Return a sigmoid behavior."""
-    dx = -self.sprite.speed
-    dy = amplitude * __get_sigmoid_derivative(self, size, amplitude, **kwargs)
-    return (dx, dy)
-
-
-def inv_sigmoid(self, size, amplitude, **kwargs):
-    """Return an inverted sigmoid behavior."""
-    dx = -self.sprite.speed
-    sd = __get_sigmoid_derivative(self, size, amplitude, **kwargs)
-    dy = amplitude * (1 - sd)
-    return (dx, dy - amplitude)
-
-
-class Enemy:
+class Enemy(Controllable):
     """Models a simple NPC."""
 
-    def __init__(self, canvas_size, image, speed=1, amp=1, animate=False):
+    def __init__(self, canvas_size, image, controller=None, animate=False):
         """Initialize Enemy object."""
         x, y = canvas_size
         sy = randint(50, y - 50)
-        self.sprite = Sprite(image, (x, sy), speed=speed,
-                             animate=animate, cast_shadow=True)
-        fn = sigmoid if sy > y // 2 else inv_sigmoid
-        self.behavior = lambda: fn(self, canvas_size, amp)
+        self.sprite = Sprite(image, (x, sy), animate=animate, cast_shadow=True)
+        self.behavior = controller
 
     def update(self):
         """Update enemy position."""
-        self.sprite.move = self.behavior()
+        try:
+            dx, dy = next(self.behavior)
+            dx *= -1
+            self.sprite.move = (dx, dy)
+        except Exception as e:
+            print(e)
+            self.sprite.move = (0, 0)
         self.sprite.update()
 
     def draw(self, screen):
@@ -60,11 +39,10 @@ class Enemy:
 class Wave:
     """Define a wave of enemies."""
 
-    def __init__(self, count, speed_factor, canvas_size):
+    def __init__(self, count, controller_factory, canvas_size):
         """Initialize an enemy wave."""
-        spd = 1 + random() * speed_factor
         self.enemies = [Enemy(canvas_size, 'media/images/ufo_spin.gif',
-                              spd, 1 + random(), True)
+                              controller_factory(), True)
                         for _ in range(count)]
         y = self.enemies[0].sprite.position[1]
         for i, e in enumerate(self.enemies):
@@ -73,12 +51,10 @@ class Wave:
 
     def update(self):
         """Update all the enemies in the wave, if they are visible."""
-        [e.update() for e in self.enemies]
+        for e in self.enemies:
+            e.update()
 
     def draw(self, screen):
         """Draw all the enemies if they are visible."""
-        [e.draw(screen) for e in self.enemies]
-
-    def limits(self, canvas_size):
-        """Verify limit for all enemies."""
-        [e.limits(canvas_size) for e in self.enemies]
+        for e in self.enemies:
+            e.draw(screen)
