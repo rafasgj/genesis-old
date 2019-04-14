@@ -20,8 +20,8 @@ class Enemy(Controllable, Collider, GameObject):
         Collider.__init__(self, kw.get('shape', Collider.RECT))
         GameObject.__init__(self, GameObject.Priority.NPC)
         x, y = canvas
-        sy = randint(50, y - 50)
-        self.__sprite = Sprite(image, (x, sy),
+        position = kw.get('position', (x + 10, randint(50, y - 50)))
+        self.__sprite = Sprite(image, position,
                                animate=kw.get('animate', False),
                                cast_shadow=kw.get('cast_shadow', True))
         self.__visible = True
@@ -55,33 +55,9 @@ class Enemy(Controllable, Collider, GameObject):
     @property
     def position(self):
         """Return the enemy position."""
-        return self.sprite.position
+        return self.__sprite.position
 
     @property
     def bounds(self):
         """Query object bounds."""
         return self.__sprite.bounds
-
-
-class Wave:
-    """Define a wave of enemies."""
-
-    def __init__(self, count, controller_factory, canvas_size):
-        """Initialize an enemy wave."""
-        self.enemies = [Enemy(canvas_size, 'media/images/ufo_spin.gif',
-                              controller_factory(), True)
-                        for _ in range(count)]
-        y = self.enemies[0].sprite.position[1]
-        for i, e in enumerate(self.enemies):
-            x, _ = e.position
-            e.sprite.position = (x + 100 * i, y)
-
-    def update(self):
-        """Update all the enemies in the wave, if they are visible."""
-        for e in self.enemies:
-            e.update()
-
-    def draw(self, screen):
-        """Draw all the enemies if they are visible."""
-        for e in self.enemies:
-            e.draw(screen)

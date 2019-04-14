@@ -3,13 +3,13 @@
 from config import config
 from engine.game import Game
 from engine.window import Window
-from engine.sprite import Sprite
-from engine.gameobject import GameObject
 from engine.controllers import SinController
 from objects.starfield import Starfield
-from objects.enemy import Enemy, Wave
+from objects.enemy import Enemy
 from objects.asteroid import Asteroid
 from objects.player import Player
+
+from random import randint
 
 import pygame
 pygame.init()
@@ -36,14 +36,21 @@ if __name__ == "__main__":
 
     game.add_object(Starfield(game.window.size))
 
-    controller = SinController(width, 5, 50, 5)
+    controller = SinController(width, 1, 1, 1)
     # controller = InvertedSigmoidController(width, 100, speed=5)
-    ufo = Enemy((width, height), 'media/images/ufo_spin.gif',
+    ufo = Enemy(size, 'media/images/ufo_spin.gif',
                 controller=controller, animate=True)
 
     player = Player((200, 400))
     game.add_object(player)
-    # game.add_object(Wave(6, lambda: SinController(width, 5, 50, 5), size))
+
+    wy = randint(0, height)
+    wave = [Enemy(size, 'media/images/ufo_spin.gif',
+                  controller=controller, animate=True,
+                  position=(width + (i + 1) * 70, wy))
+            for i in range(6)]
+    for e in wave:
+        game.add_object(e)
     game.add_object(Asteroid((width, height // 2), 0.5))
     game.add_object(ufo)
 
