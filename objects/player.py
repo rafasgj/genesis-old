@@ -23,7 +23,6 @@ class Player(Collider, Controllable, GameObject):
 
     def collide_with(self, object):
         """Enemy wal killed."""
-        print("Collided with {}", type(object))
         self.__lifes -= 1
         self.__visible = False
 

@@ -34,7 +34,6 @@ class Enemy(Controllable, Collider, GameObject):
                 dx *= -1
                 self.__sprite.move = (dx, dy)
             except Exception as e:
-                print(e)
                 self.__sprite.move = (0, 0)
             self.__sprite.update()
 

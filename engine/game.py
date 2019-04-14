@@ -68,7 +68,6 @@ class Game:
                     for obj in self.__game_objects[i + 1:]:
                         if isinstance(obj, Collider):
                             if src.did_collide(obj):
-                                print("Got collision...")
                                 src.collide_with(obj)
                                 obj.collide_with(src)
             # update objects

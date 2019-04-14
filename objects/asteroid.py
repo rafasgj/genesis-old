@@ -1,7 +1,6 @@
 """An asteroid that the player can crash into."""
 
 from engine.sprite import Sprite
-import pygame
 from engine.gameobject import GameObject
 from engine.collider import Collider
 from engine.behaviors import Controllable
