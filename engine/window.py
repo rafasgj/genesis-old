@@ -16,6 +16,7 @@ class Window:
             - size: screen resolution (w, h). Defaults to current resolution.
             - name: window name and caption.
             - cursor: True if mouse is to be shown. (Default: False)
+            - fullscreen: True if game is to run fullscreen. (Default: False)
         """
         io = pygame.display.Info()
         x_res = kwargs.get('x_res', io.current_w)
@@ -25,7 +26,9 @@ class Window:
         self.__cursor = kwargs.get('cursor', False)
         pygame.mouse.set_visible(self.__cursor)
         # inicia tela
-        flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
+        flags = 0
+        if kwargs.get('fullscreen', False):
+            flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
         self.__screen = pygame.display.set_mode(self.__dimension, flags)
         pygame.display.set_caption(name)
 

@@ -2,16 +2,13 @@
 
 import pygame
 from .lib.GIFImage import GIFImage
-from .gameobject import GameObject
 
 
-class Sprite(GameObject):
+class Sprite:
     """Define a game sprite."""
 
     def __init__(self, image, pos, speed=1, animate=False, **kw):
         """Initialize a sprite object."""
-        GameObject.__init__(self, kw.get('priority',
-                                         GameObject.Priority.DEFAULT))
         self.__pos = pos
         if animate:
             self.__image = GIFImage(image, **kw)
@@ -53,11 +50,12 @@ class Sprite(GameObject):
         """Retrieve the current sprite position."""
         self.__pos = pos
 
+    # ---- not used.
+
     @property
     def center(self):
         """Compute the certer of the sprite, based on its size."""
-        x, y = self.__pos
-        _, _, w, h = self.__image.get_rect()
+        x, y, w, h = self.bounds
         return (x + w // 2, y + h // 2)
 
     @property

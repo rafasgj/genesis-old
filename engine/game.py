@@ -2,6 +2,7 @@
 
 import pygame
 from .gameobject import GameObject
+from .collider import Collider
 
 
 class Game:
@@ -60,6 +61,16 @@ class Game:
             # handle events
             for event in pygame.event.get():
                 self.__events.get(event.type, Game.__ignore_event)(event)
+            # verify collisions
+            for i in range(len(self.__game_objects) - 1):
+                src = self.__game_objects[i]
+                if isinstance(src, Collider):
+                    for obj in self.__game_objects[i + 1:]:
+                        if isinstance(obj, Collider):
+                            if src.did_collide(obj):
+                                print("Got collision...")
+                                src.collide_with(obj)
+                                obj.collide_with(src)
             # update objects
             for object in self.__game_objects:
                 object.update()

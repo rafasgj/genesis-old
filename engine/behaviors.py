@@ -14,4 +14,5 @@ class Controllable:
 
     @property
     def controller(self):
+        """Retrieve the object controller function."""
         return self.__controller

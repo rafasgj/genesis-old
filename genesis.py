@@ -5,10 +5,11 @@ from engine.game import Game
 from engine.window import Window
 from engine.sprite import Sprite
 from engine.gameobject import GameObject
+from engine.controllers import SinController
 from objects.starfield import Starfield
 from objects.enemy import Enemy, Wave
 from objects.asteroid import Asteroid
-from controllers import SinController
+from objects.player import Player
 
 import pygame
 pygame.init()
@@ -27,7 +28,7 @@ def player_move(event):
 
 if __name__ == "__main__":
     game = Game(fps=config.fps)
-    game.window = Window()
+    game.window = Window(size=(800, 600))
     width, height = size = game.window.size
 
     game.on_key((pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
@@ -38,12 +39,10 @@ if __name__ == "__main__":
     controller = SinController(width, 5, 50, 5)
     # controller = InvertedSigmoidController(width, 100, speed=5)
     ufo = Enemy((width, height), 'media/images/ufo_spin.gif',
-                controller, animate=True)
+                controller=controller, animate=True)
 
-    player = Sprite('media/images/f18.png', (200, 400),
-                    priority=GameObject.Priority.NPC)
+    player = Player((200, 400))
     game.add_object(player)
-    game.add_object(Sprite('media/images/ufo_big.gif', (600, 100), scale=0.8))
     # game.add_object(Wave(6, lambda: SinController(width, 5, 50, 5), size))
     game.add_object(Asteroid((width, height // 2), 0.5))
     game.add_object(ufo)
