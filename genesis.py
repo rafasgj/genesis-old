@@ -15,24 +15,29 @@ import pygame
 pygame.init()
 
 
-def player_move(event):
-    """Move player with directional keys."""
-    keys = pygame.key.get_pressed()
-    dx, dy = 0, 0
-    dy = -1 if keys[pygame.K_UP] else 0
-    dy = dy + 1 if keys[pygame.K_DOWN] else dy
-    dx = -1 if keys[pygame.K_LEFT] else 0
-    dx = dx + 1 if keys[pygame.K_RIGHT] else dx
-    player.move = (dx * config.player_speed, dy * config.player_speed)
+def KeyboardController(game, keys):
+    """Define a Keyboard controller."""
+    def player_move(event):
+        """Move player with directional keys."""
+        nonlocal move
+        keys = pygame.key.get_pressed()
+        dx, dy = 0, 0
+        dy = -1 if keys[pygame.K_UP] else 0
+        dy = dy + 1 if keys[pygame.K_DOWN] else dy
+        dx = -1 if keys[pygame.K_LEFT] else 0
+        dx = dx + 1 if keys[pygame.K_RIGHT] else dx
+        move = (dx * config.player_speed, dy * config.player_speed)
+
+    move = (0, 0)
+    game.on_key(keys, player_move)
+    while True:
+        yield move
 
 
 if __name__ == "__main__":
     game = Game(fps=config.fps)
     game.window = Window(size=(800, 600))
     width, height = size = game.window.size
-
-    game.on_key((pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-                player_move)
 
     game.add_object(Starfield(game.window.size))
 
@@ -41,7 +46,8 @@ if __name__ == "__main__":
     ufo = Enemy(size, 'media/images/ufo_spin.gif',
                 controller=controller, animate=True)
 
-    player = Player((200, 400))
+    keys = (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT)
+    player = Player((200, 400), controller=KeyboardController(game, keys))
     game.add_object(player)
 
     wy = randint(0, height)

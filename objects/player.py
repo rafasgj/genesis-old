@@ -10,10 +10,10 @@ from engine.sprite import Sprite
 class Player(Collider, Controllable, GameObject):
     """Models the player objec."""
 
-    def __init__(self, position):
+    def __init__(self, position, controller=ConstantController(0, 0)):
         """Initialize the object."""
         Collider.__init__(self, Collider.RECT)
-        Controllable.__init__(self, ConstantController(0, 0))
+        Controllable.__init__(self, controller)
         GameObject.__init__(self, GameObject.Priority.PLAYER)
         self.__lifes = 3
         self.__points = 0

@@ -3,6 +3,7 @@
 import pygame
 from .gameobject import GameObject
 from .collider import Collider
+from collections import defaultdict
 
 
 class Game:
@@ -28,9 +29,8 @@ class Game:
             pygame.KEYDOWN: self.__keydown,
             pygame.KEYUP: self.__keyup,
         }
-        self.__keymap = {
-            pygame.K_ESCAPE: self.stop,
-        }
+        self.__keymap = defaultdict(set)
+        self.__keymap[pygame.K_ESCAPE].add(self.stop)
 
     def stop(self, *args, **kwargs):
         """Stop running the game."""
@@ -39,13 +39,13 @@ class Game:
     def __keydown(self, event):
         """Handle keyboard press events."""
         if event.key != pygame.K_ESCAPE:
-            fn = self.__keymap.get(event.key, Game.__ignore_event)
-            fn(event)
+            for fn in self.__keymap[event.key]:
+                fn(event)
 
     def __keyup(self, event):
         """Handle keyboard release events."""
-        fn = self.__keymap.get(event.key, Game.__ignore_event)
-        fn(event)
+        for fn in self.__keymap[event.key]:
+            fn(event)
 
     def run(self):
         """Start the game loop."""
@@ -88,12 +88,26 @@ class Game:
         if isinstance(type(key), type(pygame.K_ESCAPE)):
             if key == pygame.K_ESCAPE:
                 return
-            self.__keymap[key] = responder
+            self.__keymap[key].add(responder)
         else:
             if pygame.K_ESCAPE in key:
                 return
             for k in key:
-                self.__keymap[k] = responder
+                self.__keymap[k].add(responder)
+        return self
+
+    def remove_key(self, key, responder):
+        """Define a responder for a keyboard event."""
+        # we'll save ESCAPE to always quit the game, useful on fullscreen...
+        if isinstance(type(key), type(pygame.K_ESCAPE)):
+            if key == pygame.K_ESCAPE:
+                return
+            self.__keymap[key].remove(responder)
+        else:
+            if pygame.K_ESCAPE in key:
+                return
+            for k in key:
+                self.__keymap[k].remove(responder)
         return self
 
     @property

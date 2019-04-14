@@ -11,16 +11,13 @@ def ConstantController(dx, dy, speed=1):
 
 def SinController(length, freq, amp, speed=1, vertical=False):
     """Define a controller that moves the object in a straight line."""
-    last = 0
     i = 0
     rad = pi
     factor = freq * 2 / length * rad
     while True:
         next = amp * sin(factor * i)
-        # value = (next - last)
         value = next
         yield (speed, value) if not vertical else (value, speed)
-        last = next
         i += speed
 
 
