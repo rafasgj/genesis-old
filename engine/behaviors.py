@@ -16,3 +16,20 @@ class Controllable:
     def controller(self):
         """Retrieve the object controller function."""
         return self.__controller
+
+
+class Hideable:
+    """Define behavior to hide object."""
+
+    def __init__(self):
+        """Initialize the Hideable part of the object."""
+        self.__visible = True
+
+    @property
+    def visible(self):
+        """Verify if object is visible."""
+        return self.__visible
+
+    def hide(self):
+        """Hide the object."""
+        self.__visible = False

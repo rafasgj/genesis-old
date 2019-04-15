@@ -2,29 +2,29 @@
 
 from engine.gameobject import GameObject
 from engine.collider import Collider
-from engine.behaviors import Controllable
+from engine.behaviors import Controllable, Hideable
 from engine.controllers import ConstantController
 from engine.sprite import Sprite
 
 
-class Player(Collider, Controllable, GameObject):
+class Player(Collider, Controllable, Hideable, GameObject):
     """Models the player objec."""
 
     def __init__(self, position, controller=ConstantController(0, 0)):
         """Initialize the object."""
         Collider.__init__(self, Collider.RECT)
         Controllable.__init__(self, controller)
+        Hideable.__init__(self)
         GameObject.__init__(self, GameObject.Priority.PLAYER)
         self.__lifes = 3
         self.__points = 0
         self.__speed = 5
         self.__sprite = Sprite('media/images/f18.png', position)
-        self.__visible = True
 
     def collide_with(self, object):
         """Enemy wal killed."""
         self.__lifes -= 1
-        self.__visible = False
+        self.hide()
 
     def update(self):
         """Update object position."""
@@ -50,11 +50,6 @@ class Player(Collider, Controllable, GameObject):
         """Make the player faster."""
         if self.__speed < 7.5:
             self.__speed += 0.5
-
-    @property
-    def visible(self):
-        """Verify if object is visible."""
-        return self.__visible
 
     @property
     def lives(self):

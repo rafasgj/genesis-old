@@ -19,7 +19,7 @@ def KeyboardController(game, keys):
     """Define a Keyboard controller."""
     def player_move(event):
         """Move player with directional keys."""
-        nonlocal move
+        nonlocal move, space_not_pressed
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
         dy = -1 if keys[pygame.K_UP] else 0
@@ -28,6 +28,13 @@ def KeyboardController(game, keys):
         dx = dx + 1 if keys[pygame.K_RIGHT] else dx
         move = (dx * config.player_speed, dy * config.player_speed)
 
+        if keys[pygame.K_SPACE] and space_not_pressed:
+            print("Space down.")
+            space_not_pressed = False
+        else:
+            space_not_pressed = True
+
+    space_not_pressed = True
     move = (0, 0)
     game.on_key(keys, player_move)
     while True:
@@ -46,7 +53,9 @@ if __name__ == "__main__":
     ufo = Enemy(size, 'media/images/ufo_spin.gif',
                 controller=controller, animate=True)
 
-    keys = (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT)
+    keys = (pygame.K_UP, pygame.K_DOWN,
+            pygame.K_LEFT, pygame.K_RIGHT,
+            pygame.K_SPACE)
     player = Player((200, 400), controller=KeyboardController(game, keys))
     game.add_object(player)
 
