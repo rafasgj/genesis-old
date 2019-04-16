@@ -72,7 +72,10 @@ class Game:
                                 obj.collide_with(src)
             # update objects
             for object in self.__game_objects:
-                object.update()
+                object.update(self.__window.bounds)
+            # remove invisible objects
+            self.__game_objects = [o for o in self.__game_objects
+                                   if not hasattr(o, 'visible') or o.visible]
             # draw objects
             self.__window.clear()
             for object in list_reverse(self.__game_objects):

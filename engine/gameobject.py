@@ -20,13 +20,17 @@ class GameObject:
         """Initialize the common Game Object data."""
         self.__priority = priority.value
 
-    def update(self):
+    def update(self, bounds):
         """Update the object state."""
         raise NotImplementedError("Method update() is not implemented.")
 
     def draw(self, screen):
         """Draw object on the screen."""
-        raise NotImplementedError("Method update() is not implemented.")
+        raise NotImplementedError("Method draw() is not implemented.")
+
+    def offlimits(self, limits):
+        """Take action when object is off-limits, return if needs update."""
+        raise NotImplementedError("Method offlimits() is not implemented.")
 
     @property
     def priority(self):

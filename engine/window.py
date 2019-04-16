@@ -30,6 +30,8 @@ class Window:
         if kwargs.get('fullscreen', False):
             flags = pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
         self.__screen = pygame.display.set_mode(self.__dimension, flags)
+        w, h = self.size
+        self.bounds = (0, 0, w, h)
         pygame.display.set_caption(name)
 
     def draw(self, object):

@@ -7,5 +7,5 @@ class Config:  # noqa: D204
 
 
 config = Config()
-config.player_speed = 1
+config.player_speed = 4
 config.fps = 60

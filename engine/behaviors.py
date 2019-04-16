@@ -1,5 +1,7 @@
 """Implement behaviors for game objects."""
 
+import operator
+
 
 class Controllable:
     """A controlable object is one that ask for a next movement delta."""
@@ -8,9 +10,7 @@ class Controllable:
         """Initialize the controlable object with a control."""
         self.__controller = controller
 
-    def update(self):
-        """Update the object based on its controller."""
-        self.movement = self.__controller.next_move()
+    # Automate controller movement.
 
     @property
     def controller(self):
@@ -33,3 +33,20 @@ class Hideable:
     def hide(self):
         """Hide the object."""
         self.__visible = False
+
+
+class Movable:
+    """Define a movable object."""
+
+    def __init__(self, position):
+        """Initialize the object."""
+        self.__position = position
+
+    @property
+    def position(self):
+        """Return the current position."""
+        return self.__position
+
+    def move(self, dx, dy):
+        """Move object."""
+        self.__position = tuple(map(operator.add, self.position, (dx, dy)))

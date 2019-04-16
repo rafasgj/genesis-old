@@ -7,9 +7,8 @@ from .lib.GIFImage import GIFImage
 class Sprite:
     """Define a game sprite."""
 
-    def __init__(self, image, pos, speed=1, animate=False, **kw):
+    def __init__(self, image, speed=1, animate=False, **kw):
         """Initialize a sprite object."""
-        self.__pos = pos
         if animate:
             self.__image = GIFImage(image, **kw)
         else:
@@ -21,60 +20,17 @@ class Sprite:
                 scale = (int(w * scale), int(h * scale))
                 self.__image = pygame.transform.scale(self.__image, scale)
                 self.__image = pygame.transform.rotate(self.__image, rotate)
-        self.__speed = speed
-        self.move = (0, 0)
         self.__animate = animate
-        self.__visible = True
 
-    def draw(self, screen):
+    def draw(self, screen, position):
         """Draw the sprite to the screen."""
-        pos = list(map(int, self.position))
+        pos = list(map(int, position))
         if self.__animate:
             self.__image.draw(screen, pos)
         else:
             screen.blit(self.__image, pos)
 
-    def update(self):
-        """Update sprite position."""
-        x, y = self.__pos
-        dx, dy = self.move
-        self.__pos = (x + dx, y + dy)
-
-    @property
-    def position(self):
-        """Retrieve the current sprite position."""
-        return self.__pos
-
-    @position.setter
-    def position(self, pos):
-        """Retrieve the current sprite position."""
-        self.__pos = pos
-
-    # ---- not used.
-
-    @property
-    def center(self):
-        """Compute the certer of the sprite, based on its size."""
-        x, y, w, h = self.bounds
-        return (x + w // 2, y + h // 2)
-
     @property
     def bounds(self):
         """Compute sprite bounds."""
-        x, y = self.__pos
-        _, _, w, h = self.__image.get_rect()
-        return (x, y, w, h)
-
-    @property
-    def length(self):
-        """Return the time needed to draw the animation."""
-        return self.__image.duration() if self.__animate else 0
-
-    @property
-    def speed(self):
-        """Return the sprite speed."""
-        return self.__speed
-
-    def hide(self):
-        """Set Game Object to invisible."""
-        self.__visible = False
+        return self.__image.get_rect()

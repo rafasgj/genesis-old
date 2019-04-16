@@ -21,7 +21,7 @@ class Starfield(GameObject):
         self.__stars = [self.__create_star(randrange(0, self.__width - 1))
                         for star in range(count)]
 
-    def update(self):
+    def update(self, canvas_size):
         """Move the stars in the starfield."""
         self.__stars = [[x - speed, y, speed, mag, color]
                         if x - speed > 0
