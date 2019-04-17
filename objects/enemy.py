@@ -4,6 +4,7 @@ from random import randint
 from engine import (Sprite, Controllable, Movable, GameObject,
                     ConstantController, Collider)
 from .player import Player
+from .shot import Shot
 from .explosion import Explosion
 from .killable import Killable
 
@@ -19,7 +20,7 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
         Collider.__init__(self, kw.get('shape', Collider.RECT))
         Movable.__init__(self, kw.get('position', (canvas[0] + 10,
                                       randint(50, canvas[1] - 50))))
-        Killable.__init__(self, Explosion.SMALL)
+        Killable.__init__(self, Explosion.SMALL, time_scale=0.5)
         GameObject.__init__(self, GameObject.Priority.NPC)
         self. __sprite = Sprite(image,
                                 animate=kw.get('animate', False),
@@ -59,7 +60,7 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
     def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
-            if isinstance(object, Player):
+            if isinstance(object, (Player, Shot)):
                 self.die()
 
     @property

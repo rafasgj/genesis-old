@@ -16,14 +16,15 @@ class Shot(Collider, Controllable, Movable, Hideable, GameObject):
         angle = pi + atan2(sy - ey, sx - ex)
         return ConstantController(size * cos(angle), size * sin(angle))
 
-    def __init__(self, origin, target, size=8):
+    def __init__(self, creator, color, origin, target, size=8):
         """Initialize the object."""
         Collider.__init__(self, Collider.LINE)
         Controllable.__init__(self, Shot.__controller(origin, target, size))
         Movable.__init__(self, origin)
         Hideable.__init__(self)
         GameObject.__init__(self, GameObject.Priority.PROJECTILE)
-
+        self.__creator = type(creator)
+        self.__color = color
         self.__next = None
 
     def update(self, bounds):
@@ -37,18 +38,19 @@ class Shot(Collider, Controllable, Movable, Hideable, GameObject):
 
     def draw(self, screen):
         """Draw object on screen."""
-        white = (255, 255, 255)
         x, y = self.position
         if self.__next:
-            pygame.draw.line(screen, white, self.position, self.__next)
+            pygame.draw.line(screen, self.__color,
+                             self.position, self.__next, 2)
 
     def collide_with(self, object):
         """Act on object collision."""
-        self.hide()
+        if not isinstance(object, (Shot, self.__creator)):
+            self.hide()
 
     @property
     def bounds(self):
         """Return the position and end of the line segment."""
         xo, yo = self.position
         xt, yt = self.__next if self.__next else (xo, yo)
-        return (xo, yo, xt, yt)
+        return ((xo, yo), (xt, yt))

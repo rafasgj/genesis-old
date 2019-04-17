@@ -15,6 +15,7 @@ def KeyboardController(game, keys):
     def player_move(event):
         """Move player with directional keys."""
         nonlocal move, space_not_pressed
+        global game
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
         dy = -1 if keys[pygame.K_UP] else 0
@@ -25,8 +26,9 @@ def KeyboardController(game, keys):
 
         if keys[pygame.K_SPACE]:
             x, y, w, _ = player.bounds
-            cx, cy, *_ = asteroid.bounds
-            game.add_object(Shot((x + w, y), (cx, cy)))
+            # cx, cy, *_ = asteroid.bounds
+            game.add_object(Shot(player, (220, 0, 220),
+                                 (x + w, y), (x + 2 * w, y)))
             space_not_pressed = False
         else:
             space_not_pressed = True

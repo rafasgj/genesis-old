@@ -4,6 +4,7 @@ from engine import (GameObject, Collider, Controllable, Movable,
                     ConstantController, Sprite)
 from .killable import Killable
 from .explosion import Explosion
+from .shot import Shot
 
 
 class Player(Collider, Controllable, Movable, Killable, GameObject):
@@ -25,8 +26,9 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
     def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
-            self.__lifes -= 1
-            self.die()
+            if not isinstance(object, Shot):
+                self.__lifes -= 1
+                self.die()
 
     def update(self, bounds):
         """Update object position."""
