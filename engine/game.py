@@ -23,6 +23,7 @@ class Game:
         self.running = False
         self.__clock = pygame.time.Clock()
         self.__fps = kwargs.get('fps', 60)
+        self.__scenes = []
         self.__game_objects = []
         self.__events = {
             pygame.QUIT: self.stop,
@@ -40,7 +41,8 @@ class Game:
     def __keydown(self, event):
         """Handle keyboard press events."""
         if event.key != pygame.K_ESCAPE:
-            for fn in self.__keymap[event.key]:
+            mapped = self.__keymap[event.key].copy()
+            for fn in mapped:
                 fn(event)
 
     def __keyup(self, event):
@@ -140,11 +142,27 @@ class Game:
         if not hasattr(self, "__window"):
             self.__window = w
 
+    def start_scene(self, *args):
+        """Start a new scene."""
+        self.__scenes.append(self.__game_objects)
+        self.__game_objects = []
+
+    def end_scene(self, *args):
+        """End current scene."""
+        if self.__scenes:
+            self.__game_objects = self.__scenes.pop()
+        else:
+            self.stop()
+
     def add_object(self, object: GameObject):
-        """Add a game object to this game."""
+        """Add a game object to the current scene."""
         if object is not None:
             if not (hasattr(object, 'update') and hasattr(object, 'draw')):
                 raise ValueError("Game objects must have update() and draw().")
             self.__game_objects.append(object)
             self.__game_objects = sorted(self.__game_objects,
                                          key=lambda obj: obj.priority)
+
+    def remove_object(self, object: GameObject):
+        """Remove an object from the game."""
+        self.__game_objects.remove(object)
