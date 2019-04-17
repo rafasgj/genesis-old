@@ -1,18 +1,20 @@
 """Define the player class."""
 
-from engine import (GameObject, Collider, Controllable, Hideable, Movable,
+from engine import (GameObject, Collider, Controllable, Movable,
                     ConstantController, Sprite)
+from .killable import Killable
+from .explosion import Explosion
 
 
-class Player(Collider, Controllable, Hideable, Movable, GameObject):
+class Player(Collider, Controllable, Movable, Killable, GameObject):
     """Models the player objec."""
 
     def __init__(self, position, controller=ConstantController(0, 0)):
         """Initialize the object."""
         Collider.__init__(self, Collider.RECT)
         Controllable.__init__(self, controller)
-        Hideable.__init__(self)
         Movable.__init__(self, position)
+        Killable.__init__(self, Explosion.BIG)
         GameObject.__init__(self, GameObject.Priority.PLAYER)
         self.__sprite = Sprite('media/images/f18.png')
         self.__lifes = 3
@@ -22,23 +24,27 @@ class Player(Collider, Controllable, Hideable, Movable, GameObject):
 
     def collide_with(self, object):
         """Enemy wal killed."""
-        print(object)
-        self.__lifes -= 1
-        self.hide()
+        if self.should_update:
+            self.__lifes -= 1
+            self.die()
 
     def update(self, bounds):
         """Update object position."""
-        if self.visible:
+        if self.should_update:
             try:
                 self.move(*next(self.controller))
                 self.offlimits(bounds)
             except Exception as e:
                 pass
+        else:
+            Killable.update(self, bounds)
 
     def draw(self, screen):
         """Draw enemy on the screen."""
-        if self.visible:
+        if self.should_update:
             self.__sprite.draw(screen, self.position)
+        else:
+            Killable.draw(self, screen)
 
     def add_points(self, points):
         """Add points to player."""

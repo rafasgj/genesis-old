@@ -11,13 +11,16 @@ class Explosion(Hideable, GameObject):
     BIG = "media/images/explosao.gif"
     SMALL = "media/images/explosion.gif"
 
-    def __init__(self, position, type=SMALL):
+    def __init__(self, position, type=SMALL, **kwargs):
         """Initialize the object."""
         Hideable.__init__(self)
         GameObject.__init__(self, GameObject.Priority.DEFAULT)
-        self.__sprite = Sprite(type, True, time_scale=1.25, loop=True)
+        ts = kwargs.get('time_scale', 1.0)
+        self.__sprite = Sprite(type, animate=True, time_scale=ts, loop=True)
         self.__ttl = self.__sprite.duration + pygame.time.get_ticks()
-        self.__position = position
+        _, _, w, h = list(map(lambda i: i // 2, self.__sprite.bounds))
+        x, y = position
+        self.__position = (x - w, y - h)
 
     def update(self, bounds):
         """Update object."""

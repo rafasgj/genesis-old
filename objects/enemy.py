@@ -4,9 +4,11 @@ from random import randint
 from engine import (Sprite, Controllable, Hideable, Movable,
                     GameObject, ConstantController, Collider)
 from .player import Player
+from .explosion import Explosion
+from .killable import Killable
 
 
-class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
+class Enemy(Controllable, Collider, Movable, Killable, GameObject):
     """Models a simple NPC."""
 
     def __init__(self, canvas, image, **kw):
@@ -15,9 +17,9 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
                               kw.get('controller',
                                      ConstantController(-1, 0)))
         Collider.__init__(self, kw.get('shape', Collider.RECT))
-        Hideable.__init__(self)
         Movable.__init__(self, kw.get('position', (canvas[0] + 10,
                                       randint(50, canvas[1] - 50))))
+        Killable.__init__(self, Explosion.SMALL)
         GameObject.__init__(self, GameObject.Priority.NPC)
         self. __sprite = Sprite(image,
                                 animate=kw.get('animate', False),
@@ -25,7 +27,7 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
 
     def update(self, bounds):
         """Update enemy position."""
-        if self.visible:
+        if self.should_update:
             try:
                 dx, dy = next(self.controller)
                 dx *= -1
@@ -33,11 +35,15 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
                 self.offlimits(bounds)
             except Exception as e:
                 pass
+        else:
+            Killable.update(self, bounds)
 
     def draw(self, screen):
         """Draw enemy on the screen."""
-        if self.visible:
+        if self.should_update:
             self.__sprite.draw(screen, self.position)
+        else:
+            Killable.draw(self, screen)
 
     def offlimits(self, limits):
         """Take action when object is off-limits, return if needs update."""
@@ -52,8 +58,9 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
 
     def collide_with(self, object):
         """Enemy wal killed."""
-        if isinstance(object, Player):
-            self.hide()
+        if self.should_update:
+            if isinstance(object, Player):
+                self.die()
 
     @property
     def bounds(self):
