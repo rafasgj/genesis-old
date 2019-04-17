@@ -8,4 +8,5 @@ from .controllers import (ConstantController, SinController,   # noqa: F401
 from .game import Game   # noqa: F401
 from .gameobject import GameObject   # noqa: F401
 from .sprite import Sprite   # noqa: F401
+from .text import GameFont   # noqa: F401
 from .window import Window   # noqa: F401

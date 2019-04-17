@@ -29,6 +29,7 @@ class Game:
             pygame.KEYDOWN: self.__keydown,
             pygame.KEYUP: self.__keyup,
         }
+        self.__registered_timers = defaultdict(set)
         self.__keymap = defaultdict(set)
         self.__keymap[pygame.K_ESCAPE].add(self.stop)
 
@@ -46,6 +47,21 @@ class Game:
         """Handle keyboard release events."""
         for fn in self.__keymap[event.key]:
             fn(event)
+
+    def add_timer(self, responder, interval):
+        """Register a timer."""
+        if not hasattr(Game.add_timer, 'event'):
+            event = pygame.USEREVENT
+        else:
+            event = self.add_timer.event + 1
+        Game.add_timer.event = event
+        self.__events[event] = responder
+        pygame.time.set_timer(event, interval)
+        return event
+
+    def remove_timer(self, event):
+        """Remove a timer."""
+        del(self.__events[event])
 
     def run(self):
         """Start the game loop."""

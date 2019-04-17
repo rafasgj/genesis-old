@@ -9,10 +9,11 @@ class GameObject:
     class Priority(Enum):
         """Priorities for game objects."""
 
-        PROJECTILE = 0
-        PLAYER = 1
-        NPC = 10
-        BOSS = 20
+        UI = 0
+        PROJECTILE = 5
+        PLAYER = 10
+        NPC = 20
+        BOSS = 50
         DEFAULT = 500
         BACKGROUND = 1000
 

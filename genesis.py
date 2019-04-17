@@ -1,7 +1,7 @@
 """Genesis: The Game."""
 
 from config import config
-from engine import Game, SinController, Window
+from engine import Game, SinController, Window, GameFont
 from objects import Starfield, Enemy, Asteroid, Player, Shot
 
 from random import randint
@@ -41,9 +41,24 @@ def KeyboardController(game, keys):
 
 
 if __name__ == "__main__":
+    import sys
     game = Game(fps=config.fps)
-    game.window = Window(size=(800, 600))
+    if "-w" in sys.argv:
+        game.window = Window(size=(800, 600))
+    else:
+        game.window = Window(fullscreen=True)
     width, height = size = game.window.size
+
+    title_font = GameFont('media/fonts/open-24-display-st.ttf', 256)
+    text_font = GameFont('media/fonts/open-24-display-st.ttf', 64)
+    top_half = (0, 0, width, height // 2)
+    bottom_half = (0, height // 2, width, height)
+    game_title = title_font.render_text_centered("Genesis", top_half)
+    press_space = text_font.render_text_centered("Press SPACE to start",
+                                                 bottom_half)
+    game.add_timer(press_space.blink, 350)
+    game.add_object(game_title)
+    game.add_object(press_space)
 
     game.add_object(Starfield(game.window.size))
 
