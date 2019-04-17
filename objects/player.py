@@ -1,10 +1,7 @@
 """Define the player class."""
 
-from engine.gameobject import GameObject
-from engine.collider import Collider
-from engine.behaviors import Controllable, Hideable, Movable
-from engine.controllers import ConstantController
-from engine.sprite import Sprite
+from engine import (GameObject, Collider, Controllable, Hideable, Movable,
+                    ConstantController, Sprite)
 
 
 class Player(Collider, Controllable, Hideable, Movable, GameObject):
@@ -17,7 +14,7 @@ class Player(Collider, Controllable, Hideable, Movable, GameObject):
         Hideable.__init__(self)
         Movable.__init__(self, position)
         GameObject.__init__(self, GameObject.Priority.PLAYER)
-        self.__sprite = Sprite('media/images/f18.png', position)
+        self.__sprite = Sprite('media/images/f18.png')
         self.__lifes = 3
         self.__points = 0
         self.__speed = 5

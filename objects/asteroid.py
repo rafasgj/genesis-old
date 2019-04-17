@@ -1,10 +1,7 @@
 """An asteroid that the player can crash into."""
 
-from engine.sprite import Sprite
-from engine.gameobject import GameObject
-from engine.collider import Collider
-from engine.behaviors import Controllable, Movable
-from engine.controllers import ConstantController
+from engine import (Sprite, GameObject, Collider, Controllable, Movable,
+                    ConstantController)
 
 
 class Asteroid(Collider, Controllable, Movable, GameObject):
@@ -13,7 +10,7 @@ class Asteroid(Collider, Controllable, Movable, GameObject):
     def __init__(self, pos, scale=1, **kw):
         """Initialize the game object."""
         Collider.__init__(self, kw.get('shape', Collider.ELLIPSE))
-        Controllable.__init__(self, ConstantController(-2, 0))
+        Controllable.__init__(self, ConstantController(-1, 0))
         Movable.__init__(self, pos)
         GameObject.__init__(self, GameObject.Priority.BOSS)
         self.__sprite = Sprite('media/images/asteroid.png',
@@ -23,6 +20,7 @@ class Asteroid(Collider, Controllable, Movable, GameObject):
         """Update object position."""
         try:
             self.move(*next(self.controller))
+            self.offlimits(bounds)
         except Exception as e:
             pass
 
@@ -33,12 +31,10 @@ class Asteroid(Collider, Controllable, Movable, GameObject):
 
     def offlimits(self, limits):
         """Take action when object is off-limits, return if needs update."""
-        h, v = limits
-        if True in limits:
-            if h:
-                self.hide()
-            return False
-        return True
+        wx, wy, ww, wh = limits
+        x, y, w, h = self.bounds
+        if x + w < wx:
+            self.hide()
 
     def collide_with(self, object):
         """Asteroids are imune to collision."""

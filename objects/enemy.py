@@ -1,11 +1,8 @@
 """Models a simple NPC."""
 
 from random import randint
-from engine.sprite import Sprite
-from engine.behaviors import Controllable, Hideable, Movable
-from engine.gameobject import GameObject
-from engine.controllers import ConstantController
-from engine.collider import Collider
+from engine import (Sprite, Controllable, Hideable, Movable,
+                    GameObject, ConstantController, Collider)
 from .player import Player
 
 
@@ -33,6 +30,7 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
                 dx, dy = next(self.controller)
                 dx *= -1
                 self.move(dx, dy)
+                self.offlimits(bounds)
             except Exception as e:
                 pass
 
@@ -43,12 +41,14 @@ class Enemy(Controllable, Collider, Hideable, Movable, GameObject):
 
     def offlimits(self, limits):
         """Take action when object is off-limits, return if needs update."""
-        h, v = limits
-        if True in limits:
-            if h:
-                self.hide()
-            return False
-        return True
+        wx, wy, ww, wh = limits
+        x, y, w, h = self.bounds
+        if x + w < wx:
+            self.hide()
+        dy = wy if y < wy else y
+        dy = (wy + wh) - h if (y + h) > (wy + wh) else dy
+        dy -= y
+        self.move(0, dy)
 
     def collide_with(self, object):
         """Enemy wal killed."""

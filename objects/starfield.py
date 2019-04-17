@@ -1,8 +1,9 @@
 """Creates a 2D starfield, with parallax effect."""
 
+from engine import GameObject
+
 from random import randrange, choice
 import pygame
-from engine.gameobject import GameObject
 
 
 class Starfield(GameObject):

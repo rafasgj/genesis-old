@@ -7,7 +7,7 @@ from .lib.GIFImage import GIFImage
 class Sprite:
     """Define a game sprite."""
 
-    def __init__(self, image, speed=1, animate=False, **kw):
+    def __init__(self, image, animate=False, **kw):
         """Initialize a sprite object."""
         if animate:
             self.__image = GIFImage(image, **kw)
@@ -34,3 +34,8 @@ class Sprite:
     def bounds(self):
         """Compute sprite bounds."""
         return self.__image.get_rect()
+
+    @property
+    def duration(self):
+        """Retrieve animation duration, in miliseconds."""
+        return self.__image.duration()

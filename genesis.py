@@ -1,13 +1,8 @@
 """Genesis: The Game."""
 
 from config import config
-from engine.game import Game
-from engine.window import Window
-from engine.controllers import SinController
-from objects.starfield import Starfield
-from objects.enemy import Enemy
-from objects.asteroid import Asteroid
-from objects.player import Player
+from engine import Game, SinController, Window
+from objects import Starfield, Enemy, Asteroid, Player
 
 from random import randint
 
@@ -48,7 +43,7 @@ if __name__ == "__main__":
 
     game.add_object(Starfield(game.window.size))
 
-    controller = SinController(width, 1, 1, 1)
+    controller = SinController(width, 1, 4, 3)
     # controller = InvertedSigmoidController(width, 100, speed=5)
     ufo = Enemy(size, 'media/images/ufo_spin.gif',
                 controller=controller, animate=True)
