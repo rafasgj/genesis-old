@@ -59,10 +59,12 @@ class Collider:
                 return fn(b, a)
             return do_it
 
-    BOX = "box"
+    # BOX = "box"
     ELLIPSE = "ellipse"
     RECT = "rect"
     CIRCLE = "circle"
+    LINE = "line"
+    POINT = "point"
 
     __functions = {
         "ellipse_rect": __Algo.ellipse_rect,
@@ -74,6 +76,12 @@ class Collider:
         "rect_rect": __Algo.rect_rect,
         "circle_circle": __Algo.circle_circle,
         "ellipse_ellipse": __Algo.circle_circle,
+        "line_circle": lambda a, b: False,
+        "circle_line": __Algo.invert(lambda a, b: False),
+        "line_rect": lambda a, b: False,
+        "rect_line": __Algo.invert(lambda a, b: False),
+        "line_ellipse": lambda a, b: False,
+        "ellipse_line": __Algo.invert(lambda a, b: False),
     }
 
     def __init__(self, bounding_shape):

@@ -1,8 +1,8 @@
 """Models a simple NPC."""
 
 from random import randint
-from engine import (Sprite, Controllable, Hideable, Movable,
-                    GameObject, ConstantController, Collider)
+from engine import (Sprite, Controllable, Movable, GameObject,
+                    ConstantController, Collider)
 from .player import Player
 from .explosion import Explosion
 from .killable import Killable

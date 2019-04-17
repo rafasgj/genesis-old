@@ -2,7 +2,7 @@
 
 from config import config
 from engine import Game, SinController, Window
-from objects import Starfield, Enemy, Asteroid, Player
+from objects import Starfield, Enemy, Asteroid, Player, Shot
 
 from random import randint
 
@@ -23,8 +23,10 @@ def KeyboardController(game, keys):
         dx = dx + 1 if keys[pygame.K_RIGHT] else dx
         move = (dx * config.player_speed, dy * config.player_speed)
 
-        if keys[pygame.K_SPACE] and space_not_pressed:
-            print("Space down.")
+        if keys[pygame.K_SPACE]:
+            x, y, w, _ = player.bounds
+            cx, cy, *_ = asteroid.bounds
+            game.add_object(Shot((x + w, y), (cx, cy)))
             space_not_pressed = False
         else:
             space_not_pressed = True
@@ -45,14 +47,19 @@ if __name__ == "__main__":
 
     controller = SinController(width, 1, 4, 3)
     # controller = InvertedSigmoidController(width, 100, speed=5)
-    ufo = Enemy(size, 'media/images/ufo_spin.gif',
-                controller=controller, animate=True)
 
     keys = (pygame.K_UP, pygame.K_DOWN,
             pygame.K_LEFT, pygame.K_RIGHT,
             pygame.K_SPACE)
     player = Player((200, 400), controller=KeyboardController(game, keys))
     game.add_object(player)
+
+    asteroid = Asteroid((width, height // 2), 0.5)
+    game.add_object(asteroid)
+
+    ufo = Enemy(size, 'media/images/ufo_spin.gif',
+                controller=controller, animate=True)
+    game.add_object(ufo)
 
     wy = randint(0, height)
     wave = [Enemy(size, 'media/images/ufo_spin.gif',
@@ -61,7 +68,5 @@ if __name__ == "__main__":
             for i in range(6)]
     for e in wave:
         game.add_object(e)
-    game.add_object(Asteroid((width, height // 2), 0.5))
-    game.add_object(ufo)
 
     game.run()

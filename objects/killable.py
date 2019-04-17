@@ -36,5 +36,5 @@ class Killable(Hideable):
     def die(self):
         """Mark object to die."""
         self.__dying = True
-        self.__explosion = Explosion(self.position, self.__type, 
+        self.__explosion = Explosion(self.position, self.__type,
                                      time_scale=self.__time_scale)
