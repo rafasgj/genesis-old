@@ -21,6 +21,7 @@ class Explosion(Hideable, GameObject):
         _, _, w, h = list(map(lambda i: i // 2, self.__sprite.bounds))
         x, y = position
         self.__position = (x - w, y - h)
+        self.should_collide = False
 
     def update(self, bounds):
         """Update object."""

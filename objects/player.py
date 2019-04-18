@@ -28,6 +28,7 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
         if self.should_update:
             if not isinstance(object, Shot):
                 self.__lifes -= 1
+                self.should_collide = False
                 self.die()
 
     def update(self, bounds):

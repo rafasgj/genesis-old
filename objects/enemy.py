@@ -62,6 +62,7 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
         if self.should_update:
             if isinstance(object, (Player, Shot)):
                 self.die()
+                self.should_collide = False
 
     @property
     def bounds(self):

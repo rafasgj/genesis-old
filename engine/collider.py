@@ -169,6 +169,7 @@ class Collider:
     def __init__(self, bounding_shape):
         """Initialize the collision detection algorithms."""
         self.__bounding_shape = bounding_shape
+        self.should_collide = True
 
     @property
     def bounding_shape(self):
@@ -177,6 +178,10 @@ class Collider:
 
     def did_collide(self, object):
         """Return true if collides with object."""
+        print(object, object.should_collide)
+        if not self.should_collide or not object.should_collide:
+            print(self, "and", object, "will not collide.")
+            return False
         shape = self.bounding_shape + "_" + object.bounding_shape
         fn = Collider.__functions.get(shape, lambda a, b: False)
         return fn(self.bounds, object.bounds)

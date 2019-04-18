@@ -16,7 +16,7 @@ class Audio:
     @classmethod
     def config(cls, **kwargs):
         """Add audio configuration."""
-        Audio.__config.uupdate(kwargs)
+        Audio.__config.update(kwargs)
 
     @classmethod
     def set_audio(cls, name, filename):
