@@ -97,6 +97,9 @@ if __name__ == "__main__":
         game.window = Window(size=(800, 600))
     else:
         game.window = Window(fullscreen=True)
+    if "-m" in sys.argv:
+        Audio.config(mute=True)
+
     keys = (pygame.K_UP, pygame.K_DOWN,
             pygame.K_LEFT, pygame.K_RIGHT,
             pygame.K_SPACE)

@@ -7,24 +7,30 @@ class Audio:
     """Provides several audio services."""
 
     @classmethod
-    def init(self):
+    def init(cls):
         """Initialize sound subsystem."""
         pygame.mixer.init()
         Audio.__loops = {}
+        Audio.__config = {}
 
     @classmethod
-    def set_audio(self, name, filename):
+    def config(cls, **kwargs):
+        """Add audio configuration."""
+        Audio.__config += kwargs
+
+    @classmethod
+    def set_audio(cls, name, filename):
         """Set an audio file."""
         Audio.__loops[name] = pygame.mixer.Sound(filename)
 
     @classmethod
-    def play_audio(self, name, filename=None):
+    def play_audio(cls, name, filename=None):
         """Play an audio file."""
         loop = Audio.__loops.get(name, None)
         if filename is not None:
             loop = Audio.__loops[name] = pygame.mixer.Sound(filename)
         if loop is not None:
-            loop.play()
+            Audio.__play(loop)
 
     @classmethod
     def play_audio_loop(cls, name, filename=None):
@@ -34,7 +40,7 @@ class Audio:
         if filename is not None:
             loop = Audio.__loops[name] = pygame.mixer.Sound(filename)
         if loop is not None:
-            loop.play(-1)
+            Audio.__play(loop, -1)
 
     @classmethod
     def stop_audio_loop(cls, name):
@@ -47,3 +53,8 @@ class Audio:
     def stop(cls):
         """Stop all sounds."""
         pygame.mixer.stop()
+
+    @classmethod
+    def __play(cls, audio, *args):
+        if not Audio.__config.get('mute', False):
+            audio.play(*args)
