@@ -1,3 +1,6 @@
+# Unsupported files.
+*.mp3
+
 # local management
 /issues/
 
