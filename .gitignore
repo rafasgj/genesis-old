@@ -1,5 +1,7 @@
 # Unsupported files.
 *.mp3
+*.wav
+*.zip
 
 # local management
 /issues/
