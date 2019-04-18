@@ -1,7 +1,7 @@
 """Genesis: The Game."""
 
 from config import config
-from engine import Game, SinController, Window, GameFont
+from engine import Game, SinController, Window, GameFont, Audio
 from objects import Starfield, Enemy, Asteroid, Player, Shot
 
 from random import randint
@@ -22,7 +22,8 @@ def KeyboardController(game, keys):
             x, y, w, _ = player.bounds
             # cx, cy, *_ = asteroid.bounds
             game.add_object(Shot(player, (220, 0, 220),
-                                 (x + w, y), (x + 2 * w, y)))
+                                 (x + w - 15, y + 10), (x + 2 * w, y + 10)))
+            Audio.play_audio('player_shoot', 'media/sound/laser.ogg')
 
         dx, dy = 0, 0
         dy = -1 if keys[pygame.K_UP] else 0
@@ -88,6 +89,7 @@ if __name__ == "__main__":
         for e in wave:
             game.add_object(e)
 
+        Audio.play_audio_loop('background_music', 'media/sound/Androids.ogg')
         game.run()
 
     game = Game(fps=config.fps)
