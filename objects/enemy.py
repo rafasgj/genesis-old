@@ -4,7 +4,7 @@ from random import randint
 from engine import (Sprite, Controllable, Movable, GameObject,
                     ConstantController, Collider)
 from .player import Player
-from .shot import Shot
+from .projectile import Projectile
 from .explosion import Explosion
 from .killable import Killable
 
@@ -60,7 +60,7 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
     def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
-            if isinstance(object, (Player, Shot)):
+            if isinstance(object, (Player, Projectile)):
                 self.die()
                 self.should_collide = False
 

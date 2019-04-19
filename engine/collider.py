@@ -178,9 +178,7 @@ class Collider:
 
     def did_collide(self, object):
         """Return true if collides with object."""
-        print(object, object.should_collide)
         if not self.should_collide or not object.should_collide:
-            print(self, "and", object, "will not collide.")
             return False
         shape = self.bounding_shape + "_" + object.bounding_shape
         fn = Collider.__functions.get(shape, lambda a, b: False)

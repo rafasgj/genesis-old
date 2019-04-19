@@ -6,7 +6,7 @@ import pygame
 from math import atan2, pi, cos, sin
 
 
-class Shot(Collider, Controllable, Movable, Hideable, GameObject):
+class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
     """Models a shot."""
 
     @staticmethod
@@ -19,7 +19,7 @@ class Shot(Collider, Controllable, Movable, Hideable, GameObject):
     def __init__(self, creator, color, origin, target, size=8):
         """Initialize the object."""
         Collider.__init__(self, Collider.LINE)
-        Controllable.__init__(self, Shot.__controller(origin, target, size))
+        Controllable.__init__(self, self.__controller(origin, target, size))
         Movable.__init__(self, origin)
         Hideable.__init__(self)
         GameObject.__init__(self, GameObject.Priority.PROJECTILE)
@@ -45,7 +45,7 @@ class Shot(Collider, Controllable, Movable, Hideable, GameObject):
 
     def collide_with(self, object):
         """Act on object collision."""
-        if not isinstance(object, (Shot, self.__creator)):
+        if not isinstance(object, (Projectile, self.__creator)):
             self.hide()
 
     @property

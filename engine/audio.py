@@ -1,60 +1,43 @@
 """Audio functions."""
 
 import pygame
+pygame.mixer.init()
 
 
-class Audio:
+class Mixer:
     """Provides several audio services."""
 
-    @classmethod
-    def init(cls):
-        """Initialize sound subsystem."""
-        pygame.mixer.init()
-        Audio.__loops = {}
-        Audio.__config = {}
+    def __init__(self, config={}):
+        """Initialize mixer."""
+        self.__loops = {}
+        self.__config = config
 
-    @classmethod
-    def config(cls, **kwargs):
+    def update_config(self, **kwargs):
         """Add audio configuration."""
-        Audio.__config.update(kwargs)
+        self.__config.update(kwargs)
 
-    @classmethod
-    def set_audio(cls, name, filename):
+    def add(self, name, filename):
         """Set an audio file."""
-        Audio.__loops[name] = pygame.mixer.Sound(filename)
+        self.__loops[name] = pygame.mixer.Sound(filename)
 
-    @classmethod
-    def play_audio(cls, name, filename=None):
+    def play_loop(self, name):
         """Play an audio file."""
-        loop = Audio.__loops.get(name, None)
-        if filename is not None:
-            loop = Audio.__loops[name] = pygame.mixer.Sound(filename)
-        if loop is not None:
-            Audio.__play(loop)
+        self.play(name, -1)
 
-    @classmethod
-    def play_audio_loop(cls, name, filename=None):
+    def stop(self, name=None):
         """Play an audio file."""
-        Audio.stop_audio_loop(name)
-        loop = Audio.__loops.get(name, None)
-        if filename is not None:
-            loop = Audio.__loops[name] = pygame.mixer.Sound(filename)
-        if loop is not None:
-            Audio.__play(loop, -1)
+        if name is None:
+            pygame.mixer.stop()
+        else:
+            self.__get_loop(name).stop()
 
-    @classmethod
-    def stop_audio_loop(cls, name):
-        """Play an audio file."""
-        loop = Audio.__loops.get(name, None)
-        if loop is not None:
-            loop.stop()
+    def __get_loop(self, name):
+        loop = self.__loops.get(name, None)
+        if loop is None:
+            raise Exception("{} audio is not set.".format(name))
+        return loop
 
-    @classmethod
-    def stop(cls):
-        """Stop all sounds."""
-        pygame.mixer.stop()
-
-    @classmethod
-    def __play(cls, audio, *args):
-        if not Audio.__config.get('mute', False):
-            audio.play(*args)
+    def play(self, name, *args, **kwargs):
+        """Play an audio loop."""
+        if not self.__config.get('mute', False):
+            self.__get_loop(name).play(*args, **kwargs)

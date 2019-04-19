@@ -4,13 +4,13 @@ from engine import (GameObject, Collider, Controllable, Movable,
                     ConstantController, Sprite)
 from .killable import Killable
 from .explosion import Explosion
-from .shot import Shot
+from .projectile import Projectile
 
 
 class Player(Collider, Controllable, Movable, Killable, GameObject):
     """Models the player objec."""
 
-    def __init__(self, position, controller=ConstantController(0, 0)):
+    def __init__(self, position, speed=5, controller=ConstantController(0, 0)):
         """Initialize the object."""
         Collider.__init__(self, Collider.RECT)
         Controllable.__init__(self, controller)
@@ -20,13 +20,13 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
         self.__sprite = Sprite('media/images/f18.png')
         self.__lifes = 3
         self.__points = 0
-        self.__speed = 5
+        self.__speed = speed
         self.__move = (0, 0)
 
     def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
-            if not isinstance(object, Shot):
+            if not isinstance(object, Projectile):
                 self.__lifes -= 1
                 self.should_collide = False
                 self.die()
@@ -35,9 +35,10 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
         """Update object position."""
         if self.should_update:
             try:
-                self.move(*next(self.controller))
+                mv = next(self.controller)
+                self.move(*list(map(lambda n: self.__speed * n, mv)))
                 self.offlimits(bounds)
-            except Exception as e:
+            except StopIteration as si:
                 pass
         else:
             Killable.update(self, bounds)
