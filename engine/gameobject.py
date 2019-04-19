@@ -17,9 +17,10 @@ class GameObject:
         DEFAULT = 500
         BACKGROUND = 1000
 
-    def __init__(self, priority: Priority):
+    def __init__(self, priority):
         """Initialize the common Game Object data."""
-        self.__priority = priority.value
+        self.__priority = priority.value \
+            if isinstance(priority, Enum) else priority
 
     def update(self, bounds):
         """Update the object state."""

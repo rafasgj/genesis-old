@@ -13,14 +13,8 @@ class Label(GameObject):
         GameObject.__init__(self, GameObject.Priority.UI)
         self.__blink_state = True
         self.visible = True
-        self.__surface, r = font.render(font, text, **kwargs)
-        x, y, *dim = position
-        if kwargs.get('centered', False):
-            w, h = dim
-            r.centerx, r.centery = ((x + w) // 2, (y + h) // 2)
-        else:
-            r.x, r.y = x, y
-        self.__rect = r
+        self.__surface, self.__rect = font.render(font, text, **kwargs)
+        self.move_to(position, **kwargs)
 
     def hide(self):
         """Hide the object."""
@@ -30,6 +24,17 @@ class Label(GameObject):
         """Update object."""
         pass
 
+    def move_to(self, position, **kwargs):
+        """Move label to the given position."""
+        x, y, *dim = position
+        r = self.__rect
+        if kwargs.get('centered', False):
+            w, h = dim
+            r.centerx, r.centery = ((x + w) // 2, (y + h) // 2)
+        else:
+            r.x, r.y = x, y
+        self.__rect = r
+
     def draw(self, screen):
         """Draw on the screen."""
         if self.visible and self.__blink_state:
@@ -38,6 +43,16 @@ class Label(GameObject):
     def blink(self, *args, **kwargs):
         """Toggle blink state."""
         self.__blink_state = not self.__blink_state
+
+    @property
+    def bounds(self):
+        """Retrieve lable surface boundaries."""
+        return self.__rect
+
+    @bounds.setter
+    def bounds(self, rect):
+        """Set label boundaries."""
+        self.__rect = rect
 
 
 class Font:

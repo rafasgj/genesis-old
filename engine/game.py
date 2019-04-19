@@ -67,7 +67,11 @@ class Scene:
         for k, v in params.items():
             if isinstance(v, dict):
                 params[k] = self.__load_object(v)
-        return cls(**params)
+        obj = cls(**params)
+        for m, d, fn in description.get('notification', []):
+            meth = getattr(obj, m)
+            setattr(obj, m, d(fn)(meth))
+        return obj
 
     def verify_collisions(self):
         """Verify collision in scene objects."""

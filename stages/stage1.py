@@ -1,8 +1,13 @@
 """Define the first stage of the game."""
 
+from util.notifications import after
+
 
 def create_scene(globals):
     """Return the scene configuration."""
+    def update_score_enemy():
+        globals['score'].add(50)
+
     width, _ = canvas_size = globals['canvas_size']
     stage_1 = {
         "mixer": {
@@ -14,6 +19,7 @@ def create_scene(globals):
         },
         "objects": {
             "player": globals['player'],
+            "score": globals['score'],
             "projectile": {
                 "class": "objects.projectile.Projectile",
                 "init": {
@@ -42,7 +48,10 @@ def create_scene(globals):
                             "vertical": False
                         }
                     }
-                }
+                },
+                "notification": [
+                    ("die", after, update_score_enemy)
+                ]
             }
         },
         "events": [
@@ -51,7 +60,10 @@ def create_scene(globals):
         ],
         "before": [
             ("spawn", "background"),
-            ("spawn", "player")
+            ("spawn", "player"),
+            ("object", "score", "restart_score"),
+            ("object", "score", "toggle_score"),
+            ("spawn", "score"),
         ]
     }
     return stage_1

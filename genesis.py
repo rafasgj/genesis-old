@@ -2,7 +2,8 @@
 
 from config import config
 from objects import Player
-from engine import Game, Window, KeyboardController
+from engine import Game, Window, KeyboardController, Font
+from objects.score import Score
 
 import stages.intro, stages.stage1
 
@@ -44,14 +45,18 @@ if __name__ == "__main__":
     kbd = KeyboardController(game, directional,
                              {pygame.K_SPACE: _player_shoot})
     player = Player((200, 400), controller=kbd, speed=config.player_speed)
+    font = Font('media/fonts/open-24-display-st.ttf', 64)
 
     globals = {
         "canvas_size": game.window.size,
         "mixer_config": mixer_config,
-        "player": player
+        "player": player,
+        "score": Score(font, (20, 5)),
+        "text_font": font,
     }
 
     script = stages.intro.create_scene(globals)
     stage_1 = stages.stage1.create_scene(globals)
     script['next_scene'] = stage_1
+
     game.run(script)
