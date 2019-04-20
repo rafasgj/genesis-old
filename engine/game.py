@@ -70,7 +70,7 @@ class Scene:
         obj = cls(**params)
         for m, d, fn in description.get('notification', []):
             meth = getattr(obj, m)
-            setattr(obj, m, d(fn)(meth))
+            setattr(obj, m, d(fn, self)(meth))
         return obj
 
     def verify_collisions(self):

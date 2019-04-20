@@ -30,28 +30,30 @@ class event_listener(object):
     __before = Notifier()
     __after = Notifier()
 
-    def __init__(self, **kwargs):
+    def __init__(self, **argdict):
         """Initialize the notification wrapper."""
-        self.__b = kwargs.get('before', lambda: None)
-        self.__a = kwargs.get('after', lambda: None)
+        self.__args = argdict.get('args', None)
+        self.__kwargs = argdict.get('kwargs', None)
+        self.__b = argdict.get('before', lambda *args, **kwargs: None)
+        self.__a = argdict.get('after', lambda *args, **kwargs: None)
 
     def __call__(self, fn):
         """Call original function, decorated."""
         def wrapper(*args, **kwargs):
-            event_listener.__before.notify(fn)
+            event_listener.__before.notify(fn, *self.__args, **self.__kwargs)
             fn(*args, *kwargs)
-            event_listener.__after.notify(fn)
+            event_listener.__after.notify(fn, *self.__args, **self.__kwargs)
 
         event_listener.__before.subscribe(fn, self.__b)
         event_listener.__after.subscribe(fn, self.__a)
         return wrapper
 
 
-def before(fn):
+def before(fn, *args, **kwargs):
     """Define a notification to be called before the callable."""
-    return event_listener(before=fn)
+    return event_listener(before=fn, args=args, kwargs=kwargs)
 
 
-def after(fn):
+def after(fn, *args, **kwargs):
     """Define a notification to be called after the callable."""
-    return event_listener(after=fn)
+    return event_listener(after=fn, args=args, kwargs=kwargs)

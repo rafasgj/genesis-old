@@ -5,8 +5,9 @@ from util.notifications import after
 
 def create_scene(globals):
     """Return the scene configuration."""
-    def update_score_enemy():
+    def update_score_enemy(scene):
         globals['score'].add(50)
+        scene.event("play", "enemy_kill")
 
     width, _ = canvas_size = globals['canvas_size']
     stage_1 = {
@@ -14,7 +15,8 @@ def create_scene(globals):
             "config": globals['mixer_config'],
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
-                "player_shoot": 'media/sound/laser.ogg'
+                "player_shoot": 'media/sound/enemy-kill.ogg',
+                "enemy_kill": 'media/sound/laser.ogg',
             }
         },
         "objects": {
