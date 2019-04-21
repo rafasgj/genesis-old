@@ -5,8 +5,7 @@ from engine import Game, Window, Font
 from objects.score import Score
 
 import stages.gameover, stages.intro, stages.stage1
-
-import sys
+import cli_parser
 
 import pygame
 pygame.init()
@@ -14,18 +13,18 @@ pygame.init()
 if __name__ == "__main__":
     game = Game(fps=config.fps)
 
-    mixer_config = {"mute": "-m" in sys.argv}
+    options = cli_parser.proccess_CLI()
 
-    if "-w" in sys.argv:
-        game.window = Window(size=(800, 600))
-    else:
-        game.window = Window(fullscreen=True)
+    mx = sorted(pygame.display.list_modes())[-1]
+    size = options.dimension if options.dimension else mx
+    game.window = Window(size=size,
+                         fullscreen=not options.windowed)
 
     font = Font('media/fonts/open-24-display-st.ttf', 64)
 
     game_config = {
         "canvas_size": game.window.size,
-        "mixer_config": mixer_config,
+        "mixer_config": {"mute": options.mute},
         "score": Score(font, (20, 5)),
         "text_font": font,
         'lives_left': config.number_of_lives
