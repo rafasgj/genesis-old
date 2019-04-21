@@ -2,7 +2,7 @@
 
 This document describe the licenses used for the sound files.
 
-## laser.ogg
+## enemy-kill.ogg
 
 Sound was shortened 4x.
 
@@ -15,5 +15,13 @@ Recorded by Mike Koenig
 
 # Androids.ogg
 
-Royalty Free song, downloaded from https://www.dl-sounds.com/royalty-free/androids/
+Royalty Free song, downloaded from
+    https://www.dl-sounds.com/royalty-free/androids/
 
+# laser.ogg
+
+About: This is a punch hd i made this completely with my condenser mic. thanks to mark diangelo again.
+Title: Punch HD
+Uploaded: 07.08.11
+License: Attribution 3.0
+Recorded by Mark DiAngelo

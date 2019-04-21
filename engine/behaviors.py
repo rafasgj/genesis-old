@@ -3,6 +3,12 @@
 import operator
 
 
+class NonRemovable:
+    """Mark the object to not be removed from the game list."""
+
+    pass
+
+
 class Controllable:
     """A controlable object is one that ask for a next movement delta."""
 
@@ -33,6 +39,10 @@ class Hideable:
     def hide(self):
         """Hide the object."""
         self.__visible = False
+
+    def show(self):
+        """Hide the object."""
+        self.__visible = True
 
 
 class Movable:

@@ -1,13 +1,14 @@
 """Define the player class."""
 
 from engine import (GameObject, Collider, Controllable, Movable,
-                    ConstantController, Sprite)
+                    ConstantController, Sprite, NonRemovable)
 from .killable import Killable
 from .explosion import Explosion
 from .projectile import Projectile
 
 
-class Player(Collider, Controllable, Movable, Killable, GameObject):
+class Player(Collider, Controllable, Movable, Killable, GameObject,
+             NonRemovable):
     """Models the player objec."""
 
     def __init__(self, position, speed=5, controller=ConstantController(0, 0)):
@@ -17,19 +18,22 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
         Movable.__init__(self, position)
         Killable.__init__(self, Explosion.BIG)
         GameObject.__init__(self, GameObject.Priority.PLAYER)
+        self.__original_position = position
         self.__sprite = Sprite('media/images/f18.png')
-        self.__lifes = 3
+        self.__lives = 3
         self.__points = 0
         self.__speed = speed
         self.__move = (0, 0)
 
     def collide_with(self, object):
         """Enemy wal killed."""
+        if isinstance(object, Projectile) and \
+           isinstance(self, object.creator):
+            return
         if self.should_update:
-            if not isinstance(object, Projectile):
-                self.__lifes -= 1
-                self.should_collide = False
-                self.die()
+            self.__lives -= 1
+            self.should_collide = False
+            self.die()
 
     def update(self, bounds):
         """Update object position."""
@@ -71,6 +75,15 @@ class Player(Collider, Controllable, Movable, Killable, GameObject):
         dy = (wy + wh) - h if (y + h) > (wy + wh) else dy
         dy -= y
         self.move(dx, dy)
+
+    def respawn(self):
+        """Respawn player."""
+        x, y = self.position
+        ox, oy = self.__original_position
+        self.move(ox - x, oy - y)
+        self.should_collide = True
+        self.show()
+        Killable.respawn(self)
 
     @property
     def bounds(self):

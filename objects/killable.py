@@ -25,8 +25,8 @@ class Killable(Hideable):
         if self.__dying:
             self.__explosion.update(bounds)
             if not self.__explosion.visible:
-                self.hide()
                 self.__dying = False
+                self.hide()
 
     def draw(self, screen):
         """Draw explosion."""
@@ -38,3 +38,7 @@ class Killable(Hideable):
         self.__dying = True
         self.__explosion = Explosion(self.position, self.__type,
                                      time_scale=self.__time_scale)
+
+    def respawn(self):
+        """Respawn player."""
+        self.__dying = False

@@ -9,3 +9,4 @@ class Config:  # noqa: D204
 config = Config()
 config.player_speed = 4
 config.fps = 60
+config.number_of_lives = 3

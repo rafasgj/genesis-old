@@ -5,15 +5,17 @@ from engine import Font, Label
 import pygame
 
 
-def create_scene(globals):
+def create_scene(game_config):
     """Return the scene configuration."""
-    width, height = canvas_size = globals['canvas_size']
+    width, height = canvas_size = game_config['canvas_size']
     bottom_half = (0, height // 2, width, height)
     msg = "Press SPACE to start"
-    press_space = Label(globals['text_font'], msg, bottom_half, centered=True)
+    press_space = Label(game_config['text_font'], msg,
+                        bottom_half, centered=True)
     initial_screen = {
+        "name": "intro",
         "mixer": {
-            "config": globals['mixer_config'],
+            "config": game_config['mixer_config'],
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
             }
@@ -33,16 +35,19 @@ def create_scene(globals):
                 }
             },
             "press_space": press_space,
-            "score": globals['score']
+            "score": game_config['score']
         },
         "events": [(350, 350, "object", "press_space", "blink")],
         "before": [
-            ("spawn", "background"),
-            ("spawn", "genesis"),
-            ("spawn", "press_space"),
-            ("spawn", "score"),
+            ("spawn", ["background", "genesis", "press_space", "score"]),
             ("object", "score", "toggle_score")
         ],
-        "on_key": [(pygame.K_SPACE, "end_scene")]
+        "on_key": {
+            (pygame.K_SPACE, "end_scene"),
+        },
+        "next_scene": {
+            "end_scene": "stage1",
+            "game_over": "game_over"
+        }
     }
     return initial_screen

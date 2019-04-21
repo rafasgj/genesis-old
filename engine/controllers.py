@@ -4,28 +4,33 @@ from math import pi, sin, exp
 import pygame
 
 
-def KeyboardController(game, directional, special: dict):
+# def KeyboardController(game, directional, special: dict):
+class KeyboardController:
     """Define a Keyboard controller."""
-    move = (0, 0)
-    up, down, left, right = directional
 
-    def player_move(event, scene):
+    def __init__(self, directional):
+        """Initialize the keyboard controller."""
+        self.__move = (0, 0)
+        self.__directional = directional
+
+    def __iter__(self):
+        """Return the keyboard controller as it is an iterator/generator"""
+        return self
+
+    def player_move(self, event, scene):
         """Move player with directional keys."""
-        nonlocal move  # , up, down, left, right
-
+        up, down, left, right = self.__directional
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
         dy = -1 if keys[up] else 0
         dy = dy + 1 if keys[down] else dy
         dx = -1 if keys[left] else 0
         dx = dx + 1 if keys[right] else dx
-        move = (dx, dy)
+        self.__move = (dx, dy)
 
-    game.on_key(directional, player_move)
-    for key, handler in special.items():
-        game.on_key(key, handler)
-    while True:
-        yield move
+    def __next__(self):
+        """Return the amount to move the object."""
+        return self.__move
 
 
 def ConstantController(dx, dy, speed=1):

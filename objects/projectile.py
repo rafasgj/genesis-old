@@ -10,11 +10,11 @@ class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
     """Models a shot."""
 
     @staticmethod
-    def __controller(origin, target, size):
+    def __controller(origin, target, speed):
         sx, sy = origin
         ex, ey = target
         angle = pi + atan2(sy - ey, sx - ex)
-        return ConstantController(size * cos(angle), size * sin(angle))
+        return ConstantController(speed * cos(angle), speed * sin(angle))
 
     def __init__(self, creator, color, origin, target, size=8):
         """Initialize the object."""
@@ -54,3 +54,8 @@ class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
         xo, yo = self.position
         xt, yt = self.__next if self.__next else (xo, yo)
         return ((xo, yo), (xt, yt))
+
+    @property
+    def creator(self):
+        """Return the projectile creator."""
+        return self.__creator

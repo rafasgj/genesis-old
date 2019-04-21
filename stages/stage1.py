@@ -1,18 +1,20 @@
 """Define the first stage of the game."""
 
+from config import config
 from util.notifications import after
 
+import pygame
 
-def create_scene(globals):
+import genesis
+
+
+def create_scene(game_config):
     """Return the scene configuration."""
-    def update_score_enemy(scene):
-        globals['score'].add(50)
-        scene.event("play", "enemy_kill")
-
-    width, _ = canvas_size = globals['canvas_size']
-    stage_1 = {
+    width, _ = canvas_size = game_config['canvas_size']
+    scene = {
+        "name": "stage1",
         "mixer": {
-            "config": globals['mixer_config'],
+            "config": game_config['mixer_config'],
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
                 "player_shoot": 'media/sound/enemy-kill.ogg',
@@ -20,8 +22,39 @@ def create_scene(globals):
             }
         },
         "objects": {
-            "player": globals['player'],
-            "score": globals['score'],
+            "player": {
+                "class": "objects.player.Player",
+                "init": {
+                    "position": (200, 400),
+                    "controller": {
+                        "class": "engine.controllers.KeyboardController",
+                        "init": {
+                            "directional": (pygame.K_UP, pygame.K_DOWN,
+                                            pygame.K_LEFT, pygame.K_RIGHT)
+                        },
+                        "bind": {
+                            "up": {
+                                (pygame.K_UP, pygame.K_DOWN,
+                                 pygame.K_LEFT, pygame.K_RIGHT): "player_move"
+                            },
+                            "down": {
+                                (pygame.K_UP, pygame.K_DOWN,
+                                 pygame.K_LEFT, pygame.K_RIGHT): "player_move"
+                            }
+                        }
+                    },
+                    "speed": config.player_speed,
+                },
+                "notification": [
+                    ("die", after, genesis.player_dead)
+                ],
+                "bind": {
+                    "down": {
+                        (pygame.K_SPACE,): genesis.player_shoot
+                    }
+                }
+            },
+            "score": game_config['score'],
             "projectile": {
                 "class": "objects.projectile.Projectile",
                 "init": {
@@ -52,7 +85,7 @@ def create_scene(globals):
                     }
                 },
                 "notification": [
-                    ("die", after, update_score_enemy)
+                    ("die", after, genesis.update_score_enemy)
                 ]
             }
         },
@@ -61,11 +94,14 @@ def create_scene(globals):
             (3000, 750, "spawn", "ufo"),
         ],
         "before": [
-            ("spawn", "background"),
-            ("spawn", "player"),
+            ("spawn", ["background", "player", "score"]),
             ("object", "score", "restart_score"),
             ("object", "score", "toggle_score"),
-            ("spawn", "score"),
-        ]
+            ("object", "player", "respawn")
+        ],
+        "next_scene": {
+            "game_over": 'game_over',
+            "end_scene": 'game_over'
+        }
     }
-    return stage_1
+    return scene

@@ -57,3 +57,10 @@ def before(fn, *args, **kwargs):
 def after(fn, *args, **kwargs):
     """Define a notification to be called after the callable."""
     return event_listener(after=fn, args=args, kwargs=kwargs)
+
+
+def bind_notification(bounded_method, notification, handler, *args, **kwargs):
+    """Attach a notification handler to an object instance."""
+    self = bounded_method.__self__
+    name = bounded_method.__name__
+    setattr(self, name, notification(handler, *args, **kwargs)(bounded_method))
