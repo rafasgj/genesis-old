@@ -1,8 +1,11 @@
 PALESTRAS=pygame
 
+LATEX=latex
+# LATEX=xelatex
+
 %.pdf: %.tex
-	xelatex $<
-	xelatex $<
+	$(LATEX) $<
+	$(LATEX) $<
 	$(RM) *.aux *.dvi *.out *.log *.nav *.snm *.toc *.vrb
 
 all: $(patsubst %,%.pdf,$(PALESTRAS))
