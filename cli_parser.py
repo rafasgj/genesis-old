@@ -6,7 +6,7 @@ import argparse
 def proccess_CLI():
     """Process Genesis command line options."""
     parser = argparse.ArgumentParser(description="Genesis")
-    parser.add_argument('--version', action='version', version='%(prog)s 0.2')
+    parser.add_argument('--version', action='version', version='Genesis 0.2')
     parser.add_argument("-m", "--mute", action='store_true', dest='mute',
                         help='Mute sound.')
     parser.add_argument("-w", "--windowed", dest='windowed',

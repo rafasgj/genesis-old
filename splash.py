@@ -2,6 +2,7 @@
 
 from engine import Game, Window
 import stages.intro
+import cli_parser
 
 import pygame
 pygame.init()
