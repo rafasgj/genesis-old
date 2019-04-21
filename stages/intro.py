@@ -2,6 +2,8 @@
 
 from engine import Font, Label
 
+from objects.score import Score
+
 import pygame
 
 
@@ -9,11 +11,13 @@ def create_scene(globals):
     """Return the scene configuration."""
     width, height = canvas_size = globals['canvas_size']
     bottom_half = (0, height // 2, width, height)
+    font_file = 'media/fonts/open-24-display-st.ttf'
+    font = globals.get('text_font', Font(font_file, 64))
     msg = "Press SPACE to start"
-    press_space = Label(globals['text_font'], msg, bottom_half, centered=True)
+    press_space = Label(font, msg, bottom_half, centered=True)
     initial_screen = {
         "mixer": {
-            "config": globals['mixer_config'],
+            "config": globals.get('mixer_config', {}),
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
             }
@@ -33,7 +37,7 @@ def create_scene(globals):
                 }
             },
             "press_space": press_space,
-            "score": globals['score']
+            "score": globals.get('score', Score(font, (20, 5)))
         },
         "events": [(350, 350, "object", "press_space", "blink")],
         "before": [
