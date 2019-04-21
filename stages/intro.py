@@ -12,7 +12,7 @@ def create_scene(game_config):
     width, height = canvas_size = game_config['canvas_size']
     bottom_half = (0, height // 2, width, height)
     font_file = 'media/fonts/open-24-display-st.ttf'
-    font = globals.get('text_font', Font(font_file, 64))
+    font = game_config.get('text_font', Font(font_file, 64))
     msg = "Press SPACE to start"
     press_space = Label(font, msg, bottom_half, centered=True)
     initial_screen = {

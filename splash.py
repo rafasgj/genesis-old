@@ -8,9 +8,9 @@ pygame.init()
 
 
 game = Game(fps=60)
-game.window = Window(fullscren=True)
-
-script = stages.intro.create_scene({"canvas_size": game.window.size})
-
-game.run(script)
-
+game.window = Window(size=(800, 600))
+config = {
+    "canvas_size": game.window.size
+}
+game.add_scene(stages.intro.create_scene(config))
+game.run("intro")
