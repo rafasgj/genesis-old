@@ -64,6 +64,7 @@ def player_shoot(event, scene):
 
 def player_dead(player, scene):
     """Player is dead."""
+    scene.event("play", "player_kill")
     if player.lives == 0:
         scene.queue_event(6000, 0, "game_over")
     else:

@@ -21,6 +21,7 @@ def create_scene(game_config):
                 "background_music": 'media/sound/Androids.ogg',
                 "player_shoot": 'media/sound/enemy-kill.ogg',
                 "enemy_kill": 'media/sound/laser.ogg',
+                "player_kill": 'media/sound/mortar.ogg',
             }
         },
         "objects": {
