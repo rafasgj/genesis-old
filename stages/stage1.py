@@ -3,6 +3,8 @@
 from config import config
 from util.notifications import after
 
+from engine.text import Font
+
 import pygame
 
 import genesis
@@ -54,6 +56,13 @@ def create_scene(game_config):
                     }
                 }
             },
+            "life_stamp": {
+                "class": "objects.stamp.Stamp",
+                "init": {
+                    "font": Font("media/fonts/wmmilitary1.ttf", 24),
+                    "text": "A"
+                }
+            },
             "score": game_config['score'],
             "projectile": {
                 "class": "objects.projectile.Projectile",
@@ -94,10 +103,12 @@ def create_scene(game_config):
             (3000, 750, "spawn", "ufo"),
         ],
         "before": [
-            ("spawn", ["background", "player", "score"]),
+            ("spawn", ["background", "player", "score", "life_stamp"]),
             ("object", "score", "restart_score"),
             ("object", "score", "toggle_score"),
-            ("object", "player", "respawn")
+            ("object", "player", "respawn"),
+            ("object", "life_stamp", "stamp",
+             [(280, 35), (360, 35), (440, 35)])
         ],
         "next_scene": {
             "game_over": 'game_over',

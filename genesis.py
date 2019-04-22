@@ -67,4 +67,5 @@ def player_dead(player, scene):
     if player.lives == 0:
         scene.queue_event(6000, 0, "game_over")
     else:
+        scene.queue_event(1500, 0, "object", "life_stamp", "remove", -1)
         scene.queue_event(4000, 0, "object", "player", "respawn")
