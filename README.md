@@ -15,9 +15,6 @@ Development
 
 This project uses Python 3.5+ with pygame and Pillow packages.
 
-The Git repository uses git-lfs to store media files, remember to use
-it to pull the media files before reporting any issues.
-
 There are two goals for this project, create an engine than can be
 used to create games using a DSL, and experiment with some Python
 features to get a better understanding of the inner workings of the
