@@ -7,6 +7,8 @@ from objects.score import Score
 import stages.gameover, stages.intro, stages.stage1
 import cli_parser
 
+from random import randint
+
 import pygame
 pygame.init()
 
@@ -54,6 +56,28 @@ def player_shoot(event, scene):
             scene.event("spawn", "projectile",
                         init={
                             "creator": player,
+                            "origin": origin,
+                            "target": target,
+                            "color": color,
+                            "size": 12
+                        })
+            scene.event("play", "player_shoot")
+
+
+def enemy_shoot(scene):
+    """Make an enemy shot the player."""
+    tx, ty, *_ = scene.get_object('player').bounds
+    lst = [u for u in scene.get_object_list("ufo") if u.is_alive]
+    for ufo in lst:
+        if randint(0, 100) < 5:
+            color = (230, 0, 230)
+            x, y, w, h = ufo.bounds
+            origin = (x + w // 2, y + h // 2)
+            target = (tx, ty)
+            color = (0, 230, 230)
+            scene.event("spawn", "projectile",
+                        init={
+                            "creator": ufo,
                             "origin": origin,
                             "target": target,
                             "color": color,

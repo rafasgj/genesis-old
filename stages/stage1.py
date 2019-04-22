@@ -102,6 +102,7 @@ def create_scene(game_config):
         "events": [
             (0, 0, "music_start", "background_music"),
             (3000, 750, "spawn", "ufo"),
+            (8000, 1000, "call", genesis.enemy_shoot)
         ],
         "before": [
             ("spawn", ["background", "player", "score", "life_stamp"]),

@@ -41,7 +41,7 @@ class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
         x, y = self.position
         if self.__next:
             pygame.draw.line(screen, self.__color,
-                             self.position, self.__next, 2)
+                             self.position, self.__next, 4)
 
     def collide_with(self, object):
         """Act on object collision."""

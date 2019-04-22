@@ -54,6 +54,8 @@ class Scene:
         self.__events.extend([e for e in config.get('events', [])])
         self.stop = False
         self.key_events = config.get('on_key', set())
+        self.__frame = 0
+        self.__time = 0
 
     def __get_class(self, obj_class):
         module, classname = obj_class.rsplit('.', 1)
@@ -122,6 +124,8 @@ class Scene:
 
     def frame(self, count, elapsed):
         """Handle new frame event."""
+        self.__frame = count
+        self.__time += elapsed
         self.__events.sort(key=lambda e: int(e[0]))
         for i, (t, n, *e) in enumerate(self.__events):
             t -= elapsed
@@ -129,7 +133,6 @@ class Scene:
                 self.event(*e)
                 t = n
             self.__events[i] = (t, n, *e)
-
         self.__events = [(t, *e) for t, *e in self.__events if t > 0]
 
     def queue_event(self, time, repeat, event, *args):
@@ -165,9 +168,12 @@ class Scene:
         self.mixer.play(sound)
 
     def _object(self, name, method, *args, **kwargs):
-            obj = self.get_object(name)
-            fn = getattr(type(obj), method)
-            fn(obj, *args, **kwargs)
+        obj = self.get_object(name)
+        fn = getattr(type(obj), method)
+        fn(obj, *args, **kwargs)
+
+    def _call(self, callable, *args, **kwargs):
+        callable(self, *args, **kwargs)
 
     def _end_scene(self, *args, **kwargs):
         """End scene for the script."""
@@ -187,3 +193,8 @@ class Scene:
     def next_scene(self):
         """Query the next scenes."""
         return self.__next_scene
+
+    @property
+    def elapsed(self):
+        """Query the number of frames executed and the elapsed time."""
+        return (self.__frame, self.__time)

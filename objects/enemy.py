@@ -60,7 +60,9 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
     def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
-            if isinstance(object, (Player, Projectile)):
+            will_die = isinstance(object, Projectile) and \
+                not isinstance(self, object.creator)
+            if will_die or isinstance(object, Player):
                 self.die()
                 self.should_collide = False
 

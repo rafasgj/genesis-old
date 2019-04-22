@@ -18,6 +18,11 @@ class Killable(Hideable):
     @property
     def should_update(self):
         """Check if object should be updated."""
+        return self.is_alive
+
+    @property
+    def is_alive(self):
+        """Check if killable object is still alive."""
         return self.visible and not self.__dying
 
     def update(self, bounds):
