@@ -21,6 +21,7 @@ if __name__ == "__main__":
     size = options.dimension if options.dimension else mx
     game.window = Window(size=size,
                          fullscreen=not options.windowed)
+    config.canvas_size = game.window.size
 
     font = Font('media/fonts/open-24-display-st.ttf', 64)
 

@@ -4,6 +4,7 @@ from .gameobject import GameObject
 from .collider import Collider
 from .audio import Mixer
 from .behaviors import NonRemovable
+from .functions import SceneFunction
 
 import importlib
 
@@ -27,6 +28,30 @@ def list_reverse(lst):
         c -= 1
         yield lst[c]
     raise StopIteration
+
+
+class SceneObject:
+    """A scene object that must be loaded when needed."""
+
+    def __init__(self, name):
+        """Initialize object."""
+        self.__name = name
+
+    def __call__(self):
+        """Get contained object string."""
+        return self.__name
+
+
+class SceneBehavior:
+    """A scene behavior that must be loaded when needed."""
+
+    def __init__(self, name):
+        """Initialize object."""
+        self.__name = name
+
+    def __call__(self):
+        """Get contained object string."""
+        return self.__name
 
 
 class Scene:
@@ -54,6 +79,7 @@ class Scene:
         self.__events.extend([e for e in config.get('events', [])])
         self.stop = False
         self.key_events = config.get('on_key', set())
+        self.__behaviors = config.get('behaviors', set())
         self.__frame = 0
         self.__time = 0
 
@@ -68,12 +94,29 @@ class Scene:
             self.__keys.add(k)
             which(k, fn)
 
+        def process_scene_parameter(param):
+            if isinstance(param, SceneFunction):
+                return process_scene_parameter(param())
+            elif isinstance(param, SceneObject):
+                return self.get_object(process_scene_parameter(param()))
+            elif isinstance(param, SceneBehavior):
+                behavior = self.__behaviors[process_scene_parameter(param())]
+                return self.__load_object(behavior)
+            else:
+                return param
+
         cls = self.__get_class(description['class'])
-        params = kwargs.get('init', description.get('init', {}))
+        params = kwargs.get('init', description.get('init', {})).copy()
         for k, v in params.items():
             if isinstance(v, dict):
                 params[k] = self.__load_object(v)
-        obj = cls(**params)
+            elif isinstance(v, (SceneFunction, SceneObject, SceneBehavior)):
+                params[k] = process_scene_parameter(v)
+        try:
+            obj = cls(**params)
+        except Exception as e:
+            print("Error intsantiating '{class}'".format(**description))
+            raise
         for m, d, fn in description.get('notification', []):
             meth = getattr(obj, m)
             setattr(obj, m, d(fn, obj, self)(meth))

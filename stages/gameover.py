@@ -17,7 +17,7 @@ def create_scene(game_config):
         "objects": {
             "background": {  # starfield
                 "class": "objects.starfield.Starfield",
-                "init": {"size": canvas_size}
+                "init": {"canvas_size": canvas_size}
             },
             "GAME": {
                 "class": "engine.text.Label",

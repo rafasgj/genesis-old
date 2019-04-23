@@ -15,10 +15,10 @@ class Starfield(GameObject):
         return [x, randrange(0, self.__height - 1), choice([2, 4, 6]),
                 choice([1, 2, 3]), (choice([100, 200, 250]),) * 3]
 
-    def __init__(self, size, count=300):
+    def __init__(self, canvas_size, count=300):
         """Create the starfield stars."""
         GameObject.__init__(self, GameObject.Priority.BACKGROUND)
-        self.__width, self.__height = size
+        self.__width, self.__height = canvas_size
         self.__stars = [self.__create_star(randrange(0, self.__width - 1))
                         for star in range(count)]
 
