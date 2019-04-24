@@ -4,42 +4,22 @@ from .gameobject import GameObject
 from .collider import Collider
 from .audio import Mixer
 from .behaviors import NonRemovable
-from .functions import SceneFunction
+from .functions import Command
+from .util import get_value, list_reverse, ValueReference, TheGame
 
 import importlib
 
 
-def _find(data, item, default):
-    path = item.split('.')
-    if not path[0] in data:
-        return default
-    d = data[path[0]]
-    for i in path[1:]:
-        if i not in d:
-            return default
-        d = d[i]
-    return d
-
-
-def list_reverse(lst):
-    """Get elements of a list in reverse order."""
-    c = len(lst)
-    while c > 0:
-        c -= 1
-        yield lst[c]
-    raise StopIteration
-
-
-class SceneObject:
+class SceneObject(ValueReference):
     """A scene object that must be loaded when needed."""
 
-    def __init__(self, name):
-        """Initialize object."""
-        self.__name = name
+    pass
 
-    def __call__(self):
-        """Get contained object string."""
-        return self.__name
+
+def SceneObjectMethod(scene, obj, method):
+    """Retrieve method of a scene object."""
+    obj = scene.get_object(obj)
+    return getattr(obj, method)
 
 
 class SceneBehavior:
@@ -65,13 +45,11 @@ class Scene:
         self.__events = []
         self.__keys = set()
         self.game = game
-        self.mixer = Mixer(_find(config, 'mixer.config', {}))
+        self.mixer = Mixer(get_value(config, 'mixer.config', {}))
         # configure audio
-        for name, filename in _find(config, 'mixer.loops', {}).items():
-            self.mixer.add(name, filename)
+        self.mixer.add_files(get_value(config, 'audio.loops', {}))
         # scene object descriptions
-        for name, desc in config['objects'].items():
-            self.__object_configuration[name] = desc
+        self.__object_configuration = config.get('objects', {})
         # next scenes
         self.__next_scene = config.get('next_scene', {})
         # create events (when, recurrence, event, *args, **kwargs)
@@ -88,6 +66,8 @@ class Scene:
         return getattr(importlib.import_module(module), classname)
 
     def __load_object(self, description, **kwargs):
+        from .game import GameFont
+
         def bind_key_event(k, fn, which):
             if isinstance(fn, str):
                 fn = getattr(obj, fn)
@@ -95,28 +75,36 @@ class Scene:
             which(k, fn)
 
         def process_scene_parameter(param):
-            if isinstance(param, SceneFunction):
+            if isinstance(param, TheGame):
+                return param()
+            if isinstance(param, Command):
                 return process_scene_parameter(param())
             elif isinstance(param, SceneObject):
                 return self.get_object(process_scene_parameter(param()))
             elif isinstance(param, SceneBehavior):
                 behavior = self.__behaviors[process_scene_parameter(param())]
                 return self.__load_object(behavior)
+            elif isinstance(param, GameFont):
+                return self.game.get_font(param())
             else:
                 return param
 
         cls = self.__get_class(description['class'])
         params = kwargs.get('init', description.get('init', {})).copy()
+        classes = (Command, SceneObject, SceneBehavior, GameFont, TheGame)
         for k, v in params.items():
             if isinstance(v, dict):
-                params[k] = self.__load_object(v)
-            elif isinstance(v, (SceneFunction, SceneObject, SceneBehavior)):
+                if 'class' in v:
+                    params[k] = self.__load_object(v)
+                else:
+                    params[k] = v
+            elif isinstance(v, classes):
                 params[k] = process_scene_parameter(v)
         try:
             obj = cls(**params)
         except Exception as e:
             print("Error intsantiating '{class}'".format(**description))
-            raise
+            raise e
         for m, d, fn in description.get('notification', []):
             meth = getattr(obj, m)
             setattr(obj, m, d(fn, obj, self)(meth))

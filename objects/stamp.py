@@ -11,7 +11,7 @@ class Stamp(GameObject):
         GameObject.__init__(self, GameObject.Priority.BACKGROUND.value - 10)
         self.__blink_state = True
         self.visible = True
-        self.__surface, self.__rect = font.render(font, text, **kwargs)
+        self.__surface, self.__rect = font.render(text, **kwargs)
         self.__stamps = []
 
     def update(self, bounds):

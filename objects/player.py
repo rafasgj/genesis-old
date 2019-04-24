@@ -101,3 +101,9 @@ class Player(Collider, Controllable, Movable, Killable, GameObject,
     def points(self):
         """Query player points."""
         return self.__points
+
+    @property
+    def center(self):
+        """Query object center."""
+        x, y, w, h = self.bounds
+        return (x + w // 2, y + h // 2)

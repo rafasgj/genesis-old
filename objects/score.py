@@ -9,6 +9,7 @@ class Score(GameObject):
     def __init__(self, font, position, **kwargs):
         """Initialize the game object."""
         GameObject.__init__(self, GameObject.Priority.BACKGROUND.value - 10)
+        print(font, position)
         self.__position = position
         self.__digits = [Label(font, str(i), (0, 0)) for i in range(10)]
         self.__show_highscore = kwargs.get('highscore', False)

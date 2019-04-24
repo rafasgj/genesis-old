@@ -1,6 +1,6 @@
 """Define the end screen."""
 
-from engine import Font
+from engine import GameFont
 
 
 def create_scene(game_config):
@@ -8,8 +8,7 @@ def create_scene(game_config):
     width, height = canvas_size = game_config['canvas_size']
     scene = {
         "name": "game_over",
-        "mixer": {
-            "config": game_config['mixer_config'],
+        "audio": {
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
             }
@@ -22,7 +21,7 @@ def create_scene(game_config):
             "GAME": {
                 "class": "engine.text.Label",
                 "init": {
-                    "font": Font('media/fonts/open-24-display-st.ttf', 300),
+                    "font": GameFont('genesis.huge'),
                     "text": "GAME",
                     "position": (0, 0, width, height // 2),
                     "centered": True
@@ -31,13 +30,19 @@ def create_scene(game_config):
             "OVER": {
                 "class": "engine.text.Label",
                 "init": {
-                    "font": Font('media/fonts/open-24-display-st.ttf', 300),
+                    "font": GameFont('genesis.huge'),
                     "text": "OVER",
                     "position": (0, height // 2, width, height),
                     "centered": True
                 }
             },
-            "score": game_config['score']
+            "score": {
+                "class": "objects.score.Score",
+                "init": {
+                    "font": GameFont("genesis.normal"),
+                    "position": (20, 5)
+                }
+            }
         },
         "events": [
             (2000, 2000, "object", "score", "toggle_score"),

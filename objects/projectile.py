@@ -16,13 +16,14 @@ class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
         angle = pi + atan2(sy - ey, sx - ex)
         return ConstantController(speed * cos(angle), speed * sin(angle))
 
-    def __init__(self, creator, color, origin, target, size=8):
+    def __init__(self, creator, color, origin, direction, size=8):
         """Initialize the object."""
         Collider.__init__(self, Collider.LINE)
-        Controllable.__init__(self, self.__controller(origin, target, size))
+        Controllable.__init__(self, direction)
         Movable.__init__(self, origin)
         Hideable.__init__(self)
         GameObject.__init__(self, GameObject.Priority.PROJECTILE)
+        self.__size = size
         self.__creator = type(creator)
         self.__color = color
         self.__next = None
@@ -30,7 +31,7 @@ class Projectile(Collider, Controllable, Movable, Hideable, GameObject):
     def update(self, bounds):
         """Update object."""
         self.__next = self.position
-        self.move(*next(self.controller))
+        self.move(*map(lambda x: x * self.__size, next(self.controller)))
         x, _ = self.position
         _, _, w, _ = bounds
         if x > w:

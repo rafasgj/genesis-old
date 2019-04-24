@@ -3,49 +3,19 @@
 from config import config
 from util.notifications import after
 
-from engine import Font, RandomInt, SceneBehavior, Choice
+from engine import (SceneBehavior, PropertyReference,
+                    GameFont, TheGame, Direction)
+from engine.functions import Command, RandomInt, Choice, Add
 
 import pygame
 
 import genesis
 
-player_description = {
-    "class": "objects.player.Player",
-    "init": {
-        "position": (200, 400),
-        "controller": {
-            "class": "engine.controllers.KeyboardController",
-            "init": {
-                "directional": (pygame.K_UP, pygame.K_DOWN,
-                                pygame.K_LEFT, pygame.K_RIGHT)
-            },
-            "bind": {
-                "up": {
-                    (pygame.K_UP, pygame.K_DOWN,
-                     pygame.K_LEFT, pygame.K_RIGHT): "player_move"
-                },
-                "down": {
-                    (pygame.K_UP, pygame.K_DOWN,
-                     pygame.K_LEFT, pygame.K_RIGHT): "player_move"
-                }
-            }
-        },
-        "speed": config.player_speed,
-    },
-    "notification": [
-        ("die", after, genesis.player_dead)
-    ],
-    "bind": {
-        "down": {
-            (pygame.K_SPACE,): genesis.player_shoot
-        }
-    }
-}
 
 life_stamp_description = {
     "class": "objects.stamp.Stamp",
     "init": {
-        "font": Font("media/fonts/wmmilitary1.ttf", 24),
+        "font": GameFont("military.normal"),
         "text": "A"
     }
 }
@@ -55,8 +25,9 @@ projectile_description = {
     "init": {
         "creator": None,
         "color": (0, 255, 255),
-        "origin": (0, 0, 0),
-        "target": (0, 0, 0)
+        "origin": PropertyReference("player", "center"),
+        "target": Command(Add, PropertyReference("player", "center"),
+                          Direction.right)
     }
 }
 
@@ -66,8 +37,7 @@ def create_scene(game_config):
     width, _ = canvas_size = game_config['canvas_size']
     scene = {
         "name": "stage1",
-        "mixer": {
-            "config": game_config['mixer_config'],
+        "audio": {
             "loops": {
                 "background_music": 'media/sound/Androids.ogg',
                 "player_shoot": 'media/sound/enemy-kill.ogg',
@@ -88,16 +58,42 @@ def create_scene(game_config):
             },
             "const_controller": {
                 "class": "engine.controllers.ConstantController",
-                "init": {
-                    "dx": RandomInt(4, 7),
-                    "dy": 0
-                }
+                "init": {"dx": RandomInt(4, 7), "dy": 0}
             },
+            "keyboard": {
+                "class": "engine.controllers.KeyboardController",
+                "init": {
+                    "game": TheGame(),
+                    "handlers": {
+                        "down": {
+                            pygame.K_UP: {"dx": 0, "dy": -1},
+                            pygame.K_DOWN: {"dx": 0, "dy": +1},
+                            pygame.K_LEFT: {"dx": -1, "dy": 0},
+                            pygame.K_RIGHT: {"dx": +1, "dy": 0}
+                        },
+                        "up": {
+                            pygame.K_UP: {"dx": 0, "dy": +1},
+                            pygame.K_DOWN: {"dx": 0, "dy": -1},
+                            pygame.K_LEFT: {"dx": +1, "dy": 0},
+                            pygame.K_RIGHT: {"dx": -1, "dy": 0}
+                        }
+                    }
+                }
+            }
         },
         "objects": {
-            "player": player_description,
+            "player": {
+                "class": "objects.player.Player",
+                "init": {
+                    "position": (200, 400),
+                    "controller": SceneBehavior('keyboard'),
+                    "speed": config.player_speed,
+                },
+                "notification": [
+                    ("die", after, genesis.player_dead)
+                ]
+            },
             "life_stamp": life_stamp_description,
-            "score": game_config['score'],
             "projectile": projectile_description,
             "background": {
                 "class": "objects.starfield.Starfield",
@@ -117,6 +113,13 @@ def create_scene(game_config):
                 "notification": [
                     ("die", after, genesis.update_score_enemy)
                 ]
+            },
+            "score": {
+                "class": "objects.score.Score",
+                "init": {
+                    "font": GameFont("genesis.normal"),
+                    "position": (20, 5)
+                }
             }
         },
         "events": [

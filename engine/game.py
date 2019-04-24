@@ -1,11 +1,21 @@
 """The base game class."""
 
 from .scene import Scene
+from .util import get_value
+from .window import Window
+from .util import ValueReference, TheGame
+from .text import Font
 
 import pygame
 
 from collections import defaultdict
 from functools import partial
+
+
+class GameFont(ValueReference):
+    """Provide the name of a game font."""
+
+    pass
 
 
 class Game:
@@ -15,7 +25,28 @@ class Game:
     def __ignore_event(*args, **kwargs):
         pass
 
-    def __init__(self, **kwargs):
+    def __load_fonts(self, fonts):
+        result = {}
+        for name, config in fonts.items():
+            filename = config['filename']
+            for id, size in config['sizes'].items():
+                f = Font(filename, size)
+                result["{}.{}".format(name, id)] = f
+        return result
+
+    def __init_window(self, config):
+        size = config.get("size", "maximum")
+        modes = sorted(pygame.display.list_modes())
+        if size == "maximum":
+            size = modes[-1]
+        elif size == "minimum":
+            size = modes[0]
+        elif isinstance(size, dict):
+            size = (size['width'], size['height'])
+        fullscreen = config.get("fullscren", False)
+        return Window(size=size, fullscreen=fullscreen)
+
+    def __init__(self, script, **kwargs):
         """
         Initialize the game object.
 
@@ -24,7 +55,7 @@ class Game:
         """
         self.running = False
         self.__clock = pygame.time.Clock()
-        self.__fps = kwargs.get('fps', 60)
+        self.__fps = get_value(script, 'fps', 60)
         self.__scenes = {}
         self.__events = {
             pygame.QUIT: self.stop,
@@ -36,9 +67,16 @@ class Game:
         self.__game_objects = []
         self.__keydown = {}
         self.__keyup = {}
-        self.__keyup[pygame.K_ESCAPE] = self.stop
+        self.__keyup.update({pygame.K_ESCAPE: self.stop})
         self.__current_scene = None
         self.__game_over = True
+        self.__fonts = self.__load_fonts(script.get("fonts", {}))
+        self.__window = self.__init_window(script['window'])
+        TheGame.game = self
+
+    def get_font(self, fontsize):
+        """Get font object."""
+        return self.__fonts[fontsize]
 
     def stop(self, *args, **kwargs):
         """Stop running the game."""

@@ -1,10 +1,10 @@
 """Genesis: The Game."""
 
 from config import config
-from engine import Game, Window, Font
+from engine import Game, Direction
 from objects.score import Score
 
-import stages.gameover, stages.intro, stages.stage1
+import stages.gameover, stages.intro, stages.stage1, stages.genesis
 import cli_parser
 
 from random import randint
@@ -13,23 +13,15 @@ import pygame
 pygame.init()
 
 if __name__ == "__main__":
-    game = Game(fps=config.fps)
-
     options = cli_parser.proccess_CLI()
 
-    mx = sorted(pygame.display.list_modes())[-1]
-    size = options.dimension if options.dimension else mx
-    game.window = Window(size=size,
-                         fullscreen=not options.windowed)
-    config.canvas_size = game.window.size
+    game = Game(stages.genesis.Genesis)
 
-    font = Font('media/fonts/open-24-display-st.ttf', 64)
+    config.canvas_size = game.window.size
 
     game_config = {
         "canvas_size": game.window.size,
         "mixer_config": {"mute": options.mute},
-        "score": Score(font, (20, 5)),
-        "text_font": font,
         'lives_left': config.number_of_lives
     }
 
@@ -67,20 +59,17 @@ def player_shoot(event, scene):
 
 def enemy_shoot(scene):
     """Make an enemy shot the player."""
-    tx, ty, *_ = scene.get_object('player').bounds
+    target = scene.get_object('player').center
     lst = [u for u in scene.get_object_list("ufo") if u.is_alive]
     for ufo in lst:
         if randint(0, 100) < 5:
-            color = (230, 0, 230)
-            x, y, w, h = ufo.bounds
-            origin = (x + w // 2, y + h // 2)
-            target = (tx, ty)
             color = (0, 230, 230)
+            direction = Direction.towards(ufo.center, target)
             scene.event("spawn", "projectile",
                         init={
                             "creator": ufo,
-                            "origin": origin,
-                            "target": target,
+                            "origin": ufo.center,
+                            "direction": direction,
                             "color": color,
                             "size": 12
                         })

@@ -1,34 +1,28 @@
 """Functions than can be used in game script."""
 
-from random import randint, choice
+from .util import Command
+
+import random
 
 
-class SceneFunction:
-    """Base of all scene functions."""
-
-    pass
-
-
-class RandomInt(SceneFunction):
-    """Return an Integer in the range [a..b]."""
-
-    def __init__(self, a, b):
-        """Initialize object."""
-        self.__a = a
-        self.__b = b
-
-    def __call__(self):
-        """Execute object."""
-        return randint(self.__a, self.__b)
+def RandomInt(*args):
+    """Return a random int number between a and b."""
+    return Command(random.randint, *args)
 
 
-class Choice(SceneFunction):
-    """Return one of several options."""
+def Choice(*args):
+    """Return a random element from the given list."""
+    return Command(random.choice, args)
 
-    def __init__(self, *args):
-        """Initialize object."""
-        self.__options = args
 
-    def __call__(self):
-        """Execute object."""
-        return choice(self.__options)
+def Add(*args):
+    """Return the sum of all arguments."""
+    t = type(args[0])
+    return sum(map(t, args), t())
+
+
+def Sub(*args):
+    """Return the sum of all arguments."""
+    t = type(args[0])
+    args = map(t, args)
+    return sum(map(lambda x: -1 * x, args[1:]), args[0])

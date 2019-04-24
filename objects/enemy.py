@@ -72,3 +72,9 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
         x, y = self.position
         _, _, w, h = self.__sprite.bounds
         return (x, y, w, h)
+
+    @property
+    def center(self):
+        """Query object bounds."""
+        x, y, w, h = self.bounds
+        return (x + w // 2, y + h // 2)

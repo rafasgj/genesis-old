@@ -20,6 +20,11 @@ class Mixer:
         """Set an audio file."""
         self.__loops[name] = pygame.mixer.Sound(filename)
 
+    def add_files(self, group: dict):
+        """Add all files in group to the list of loops."""
+        for name, filename in group.items():
+            self.add(name, filename)
+
     def play_loop(self, name):
         """Play an audio file."""
         self.play(name, -1)

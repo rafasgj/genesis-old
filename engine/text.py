@@ -11,9 +11,10 @@ class Label(GameObject):
     def __init__(self, font, text, position, **kwargs):
         """Initialize a text object."""
         GameObject.__init__(self, GameObject.Priority.UI)
+        kwargs.update({} if 'color' in kwargs else {'color': (255, 255, 255)})
         self.__blink_state = True
         self.visible = True
-        self.__surface, self.__rect = font.render(font, text, **kwargs)
+        self.__surface, self.__rect = font.render(text, **kwargs)
         self.move_to(position, **kwargs)
 
     def hide(self):
@@ -67,11 +68,11 @@ class Font:
         """Initialize font object."""
         self.__font = pygame.font.Font(name, size)
 
-    def __create_surface(self, font, text, **kwargs):
+    def __create_surface(self, text, **kwargs):
         color = kwargs.get('color', (255, 255, 255))
         surface = self.__font.render(text, True, color)
         return surface, surface.get_rect()
 
-    def render(self, text, color, **kwargs):
+    def render(self, text, **kwargs):
         """Render a text with the given color."""
-        return self.__create_surface(text, color, **kwargs)
+        return self.__create_surface(text, **kwargs)
