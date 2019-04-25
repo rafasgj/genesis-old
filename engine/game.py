@@ -205,3 +205,8 @@ class Game:
         """Set the game window, if not set. It is a write-only property."""
         if not hasattr(self, "__window"):
             self.__window = w
+
+    @property
+    def current_scene(self):
+        """Retrieve current running scene."""
+        return self.__current_scene

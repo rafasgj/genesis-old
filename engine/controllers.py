@@ -10,11 +10,16 @@ class KeyboardController:
 
     def __init__(self, game, handlers):
         """Initialize the keyboard controller."""
+        def __add_handlers(config, method):
+            for key, values in config.items():
+                if isinstance(values, dict):
+                    method(key, Command(self.add_move, **values))
+                else:
+                    method(key, values)
+
         self.__move = (0, 0)
-        for key, values in handlers.get("up", {}).items():
-            game.on_key_up(key, Command(self.add_move, **values))
-        for key, values in handlers.get("down", {}).items():
-            game.on_key_down(key, Command(self.add_move, **values))
+        __add_handlers(handlers.get("up", {}), game.on_key_up)
+        __add_handlers(handlers.get("down", {}), game.on_key_down)
 
     def __iter__(self):
         """Return the keyboard controller as it is an iterator/generator"""

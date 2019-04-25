@@ -72,10 +72,30 @@ class PropertyReference(object):
 
     def __str__(self):
         """Convert to str."""
-        return str(self.value)
+        value = self.value
+        return str(value)
+
+    def __iter__(self):
+        """Treat property as an iterator."""
+        value = self.value
+        if not isinstance(value, (tuple, list)):
+            raise Exception("Property is not iterable.")
+        self.__iter_count = 0
+        return self
+
+    def __next__(self):
+        """Retrieve the next element."""
+        value = self.value
+        if isinstance(value, (tuple, list)):
+            if self.__iter_count < len(value):
+                self.__iter_count += 1
+                return value[self.__iter_count - 1]
+        raise StopIteration
 
     @property
-    def value(self, scene):
+    def value(self):
         """Return the value of the property."""
-        obj = scene.get_object(object)
+        # TODO: Fix this reference...
+        scene = TheGame()().current_scene
+        obj = scene.get_object(self.__name)
         return getattr(obj, self.__property)

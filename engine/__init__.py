@@ -10,7 +10,7 @@ from .controllers import (ConstantController, Direction,   # noqa: F401
 from .game import Game, GameFont   # noqa: F401h
 from .gameobject import GameObject   # noqa: F401
 from .sprite import Sprite   # noqa: F401
-from .scene import (Scene,   # noqa: F401
+from .scene import (Scene, SceneEvent,   # noqa: F401
     SceneObject, SceneBehavior)  # noqa: F401
 from .text import Label, Font   # noqa: F401
 from .window import Window   # noqa: F401

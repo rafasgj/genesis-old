@@ -3,33 +3,13 @@
 from config import config
 from util.notifications import after
 
-from engine import (SceneBehavior, PropertyReference,
-                    GameFont, TheGame, Direction)
-from engine.functions import Command, RandomInt, Choice, Add
+from engine import (SceneBehavior, PropertyReference, SceneEvent,
+                    GameFont, TheGame, Direction, SceneObject)
+from engine.functions import RandomInt, Choice
 
 import pygame
 
 import genesis
-
-
-life_stamp_description = {
-    "class": "objects.stamp.Stamp",
-    "init": {
-        "font": GameFont("military.normal"),
-        "text": "A"
-    }
-}
-
-projectile_description = {
-    "class": "objects.projectile.Projectile",
-    "init": {
-        "creator": None,
-        "color": (0, 255, 255),
-        "origin": PropertyReference("player", "center"),
-        "target": Command(Add, PropertyReference("player", "center"),
-                          Direction.right)
-    }
-}
 
 
 def create_scene(game_config):
@@ -69,7 +49,8 @@ def create_scene(game_config):
                             pygame.K_UP: {"dx": 0, "dy": -1},
                             pygame.K_DOWN: {"dx": 0, "dy": +1},
                             pygame.K_LEFT: {"dx": -1, "dy": 0},
-                            pygame.K_RIGHT: {"dx": +1, "dy": 0}
+                            pygame.K_RIGHT: {"dx": +1, "dy": 0},
+                            pygame.K_SPACE: SceneEvent("spawn", "projectile")
                         },
                         "up": {
                             pygame.K_UP: {"dx": 0, "dy": +1},
@@ -93,8 +74,23 @@ def create_scene(game_config):
                     ("die", after, genesis.player_dead)
                 ]
             },
-            "life_stamp": life_stamp_description,
-            "projectile": projectile_description,
+            "life_stamp": {
+                "class": "objects.stamp.Stamp",
+                "init": {
+                    "font": GameFont("military.normal"),
+                    "text": "A"
+                }
+            },
+            "projectile": {
+                "class": "objects.projectile.Projectile",
+                "init": {
+                    "creator": SceneObject("player"),
+                    "color": (255, 0, 255),
+                    "origin": PropertyReference("player", "center"),
+                    "direction": Direction.right,
+                    "size": 12
+                }
+            },
             "background": {
                 "class": "objects.starfield.Starfield",
                 "init": {

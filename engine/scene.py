@@ -34,6 +34,21 @@ class SceneBehavior:
         return self.__name
 
 
+class SceneEvent:
+    """A scene event that is created when needed."""
+
+    def __init__(self, *args, **kwargs):
+        """Initialize event object."""
+        self.__args = args
+        self.__kwargs = kwargs
+
+    def __call__(self, *args, **kwargs):
+        """Queue event."""
+        print ("ARGS:", self.__args)
+        print ("KWARGS:", self.__kwargs)
+        TheGame()().current_scene.queue_event(-1, 0, *self.__args, **self.__kwargs)
+
+
 class Scene:
     """Models a game scene."""
 
@@ -84,6 +99,8 @@ class Scene:
             elif isinstance(param, SceneBehavior):
                 behavior = self.__behaviors[process_scene_parameter(param())]
                 return self.__load_object(behavior)
+            elif isinstance(param, SceneEvent):
+                return SceneEvent(self, *param)
             elif isinstance(param, GameFont):
                 return self.game.get_font(param())
             else:
@@ -91,7 +108,8 @@ class Scene:
 
         cls = self.__get_class(description['class'])
         params = kwargs.get('init', description.get('init', {})).copy()
-        classes = (Command, SceneObject, SceneBehavior, GameFont, TheGame)
+        classes = (Command, SceneObject, SceneBehavior, SceneEvent,
+                   GameFont, TheGame)
         for k, v in params.items():
             if isinstance(v, dict):
                 if 'class' in v:
