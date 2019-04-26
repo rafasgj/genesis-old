@@ -1,18 +1,35 @@
 """Game configuration"""
 
+from engine import PropertyReference, GameVariable
+
 Genesis = {
     "fps": 60,
     "window": {
-        "size": (800, 600),
-        "minimum": {
-            "width": 800,
-            "height": 600
+        "size": "minimum",
+        "minimum": (1024, 768),
+        "maximum": (1920, 1080),
+        "fullscreen": False
+    },
+    "variables": {
+        "score": {
+            "value": 0,
+            "bind": [
+                ("after", "ufo", "die", "add", 50)
+            ]
         },
-        "maximum": {
-            "width": 1920,
-            "height": 1080
+        "highscore": {
+            "value": 0,
+            "bind": [
+                ("after", GameVariable("score"), "add",
+                 "max", PropertyReference("score", "value"))
+            ]
         },
-        "fullscreen": True
+        "lives": {
+            "value": 3,
+            "notifications": [
+                ("after", "player", "die", "sub", 1)
+            ]
+        }
     },
     "fonts": {
         "genesis": {

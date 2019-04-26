@@ -9,8 +9,10 @@ def create_scene(game_config):
     scene = {
         "name": "game_over",
         "audio": {
-            "loops": {
-                "background_music": 'media/sound/Androids.ogg',
+            "background_music": {
+                "filename": 'media/sound/Androids.ogg',
+                "loop": True,
+                "autostart": True
             }
         },
         "objects": {

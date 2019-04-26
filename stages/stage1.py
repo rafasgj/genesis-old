@@ -4,7 +4,7 @@ from config import config
 from util.notifications import after
 
 from engine import (SceneBehavior, PropertyReference, SceneEvent,
-                    GameFont, TheGame, Direction, SceneObject)
+                    GameFont, TheGame, Direction, SceneObject, GameVariable)
 from engine.functions import RandomInt, Choice
 
 import pygame
@@ -18,12 +18,14 @@ def create_scene(game_config):
     scene = {
         "name": "stage1",
         "audio": {
-            "loops": {
-                "background_music": 'media/sound/Androids.ogg',
-                "player_shoot": 'media/sound/enemy-kill.ogg',
-                "enemy_kill": 'media/sound/laser.ogg',
-                "player_kill": 'media/sound/mortar.ogg',
-            }
+            "background_music": {
+                "filename": 'media/sound/Androids.ogg',
+                "loop": True,
+                "autostart": True
+            },
+            "player_shoot": {"filename": 'media/sound/enemy-kill.ogg'},
+            "enemy_kill": {"filename": 'media/sound/laser.ogg'},
+            "player_kill": {"filename": 'media/sound/mortar.ogg'},
         },
         "behaviors": {
             "sin_controller": {
@@ -50,7 +52,8 @@ def create_scene(game_config):
                             pygame.K_DOWN: {"dx": 0, "dy": +1},
                             pygame.K_LEFT: {"dx": -1, "dy": 0},
                             pygame.K_RIGHT: {"dx": +1, "dy": 0},
-                            pygame.K_SPACE: SceneEvent("spawn", "projectile")
+                            pygame.K_SPACE: SceneEvent("spawn", "projectile"),
+                            'a': SceneEvent("spawn", "projectile")
                         },
                         "up": {
                             pygame.K_UP: {"dx": 0, "dy": +1},
@@ -70,7 +73,7 @@ def create_scene(game_config):
                     "controller": SceneBehavior('keyboard'),
                     "speed": config.player_speed,
                 },
-                "notification": [
+                "notifications": [
                     ("die", after, genesis.player_dead)
                 ]
             },
@@ -105,28 +108,27 @@ def create_scene(game_config):
                     "image": 'media/images/ufo_spin.gif',
                     "controller": SceneBehavior(Choice("sin_controller",
                                                        "const_controller"))
-                },
-                "notification": [
-                    ("die", after, genesis.update_score_enemy)
-                ]
+                }
             },
             "score": {
                 "class": "objects.score.Score",
                 "init": {
                     "font": GameFont("genesis.normal"),
                     "position": (20, 5)
-                }
+                },
+                "bind": [
+                    ("after", GameVariable('score'), "add",
+                     "update_score", GameVariable('score'))
+                ]
             }
         },
         "events": [
-            (0, 0, "music_start", "background_music"),
+            (0, 0, "play_audio", "background_music"),
             (3000, 750, "spawn", "ufo"),
             (8000, 1000, "call", genesis.enemy_shoot)
         ],
         "before": [
             ("spawn", ["background", "player", "score", "life_stamp"]),
-            ("object", "score", "restart_score"),
-            ("object", "score", "toggle_score"),
             ("object", "player", "respawn"),
             ("object", "life_stamp", "stamp",
              [(280, 35), (360, 35), (440, 35)])

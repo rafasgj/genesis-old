@@ -12,6 +12,8 @@ class KeyboardController:
         """Initialize the keyboard controller."""
         def __add_handlers(config, method):
             for key, values in config.items():
+                if isinstance(key, str):
+                    key = ord(key)
                 if isinstance(values, dict):
                     method(key, Command(self.add_move, **values))
                 else:

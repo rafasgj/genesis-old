@@ -1,9 +1,9 @@
 """The base game class."""
 
 from .scene import Scene
-from .util import get_value
+from .util import get_value, list_reverse
 from .window import Window
-from .util import ValueReference, TheGame
+from .util import ValueReference, TheGame, GameVariable
 from .text import Font
 
 import pygame
@@ -35,15 +35,21 @@ class Game:
         return result
 
     def __init_window(self, config):
-        size = config.get("size", "maximum")
         modes = sorted(pygame.display.list_modes())
+        minimum = config.get("minimum", modes[0])
+        maximum = config.get("maximum", modes[-1])
+        size = config.get("size", "maximum")
         if size == "maximum":
-            size = modes[-1]
+            for mode in list_reverse(modes):
+                if mode <= maximum:
+                    size = mode
+                    break
         elif size == "minimum":
-            size = modes[0]
-        elif isinstance(size, dict):
-            size = (size['width'], size['height'])
-        fullscreen = config.get("fullscren", False)
+            for mode in modes:
+                if mode >= minimum:
+                    size = mode
+                    break
+        fullscreen = config.get("fullscreen", False)
         return Window(size=size, fullscreen=fullscreen)
 
     def __init__(self, script, **kwargs):
@@ -64,7 +70,6 @@ class Game:
         }
         self.__registered_timers = defaultdict(set)
         # Scene configurable stuff.
-        self.__game_objects = []
         self.__keydown = {}
         self.__keyup = {}
         self.__keyup.update({pygame.K_ESCAPE: self.stop})
@@ -72,7 +77,18 @@ class Game:
         self.__game_over = True
         self.__fonts = self.__load_fonts(script.get("fonts", {}))
         self.__window = self.__init_window(script['window'])
+        self.__variables = {name: GameVariable(name, desc, self) for name, desc
+                            in script.get("variables", {}).items()}
         TheGame.game = self
+
+    def bind_variables(self, cls, obj):
+        """Bind variable notifications to objects of a class."""
+        for n, v in self.__variables.items():
+            v.bind_notifications(cls, obj)
+
+    def get_variable(self, name):
+        """Retrieve a Game Variable."""
+        return self.__variables[name]
 
     def get_font(self, fontsize):
         """Get font object."""
@@ -117,13 +133,13 @@ class Game:
         for (key, handler) in scene.key_events:
             fn = partial(getattr(scene, handler), self)
             self.on_key_up(key, fn)
-        return scene
+        self.__current_scene = scene
 
     def run(self, first_scene):
         """Start the game loop."""
         self.running = True
         frame = 0
-        self.__current_scene = self.__start_scene(self.__scenes[first_scene])
+        self.__start_scene(self.__scenes[first_scene])
         while self.running and self.__current_scene:
             # notify scene of new frame.
             self.__current_scene.frame(frame, 1000 / self.__fps)
@@ -146,7 +162,7 @@ class Game:
                 next = "game_over" if self.__game_over else "end_scene"
                 scenes = self.__current_scene.next_scene
                 scene = scenes[next]
-                self.__current_scene = self.__start_scene(self.__scenes[scene])
+                self.__start_scene(self.__scenes[scene])
                 frame = 0
 
     def add_scene(self, scene):
@@ -190,6 +206,12 @@ class Game:
             remove_event(keys)
         return self
 
+    def get_object(self, object):
+        """Retrieve an object from the game or the current scene."""
+        if object in self.__variables:
+            return self.__variables[object]
+        return self.__current_scene.get_object(object)
+
     def game_over(self):
         """Mark the game as game over."""
         self.__game_over = True
@@ -199,12 +221,6 @@ class Game:
     def window(self):
         """Retrieve the game window"""
         return self.__window
-
-    @window.setter
-    def window(self, w):
-        """Set the game window, if not set. It is a write-only property."""
-        if not hasattr(self, "__window"):
-            self.__window = w
 
     @property
     def current_scene(self):

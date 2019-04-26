@@ -10,11 +10,6 @@ def create_scene(game_config):
     width, height = canvas_size = game_config['canvas_size']
     initial_screen = {
         "name": "intro",
-        "audio": {
-            "loops": {
-                "background_music": 'media/sound/Androids.ogg',
-            }
-        },
         "objects": {
             "background": {  # starfield
                 "class": "objects.starfield.Starfield",

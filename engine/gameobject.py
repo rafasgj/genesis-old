@@ -1,9 +1,11 @@
 """Basic attributes and behavior of game objects."""
 
+from .util import Bindable
+
 from enum import Enum
 
 
-class GameObject:
+class GameObject(Bindable):
     """Define the basic attributes and behavior of all game objects."""
 
     class Priority(Enum):
@@ -19,6 +21,7 @@ class GameObject:
 
     def __init__(self, priority):
         """Initialize the common Game Object data."""
+        Bindable.__init__(self)
         self.__priority = priority.value \
             if isinstance(priority, Enum) else priority
 

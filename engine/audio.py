@@ -10,20 +10,15 @@ class Mixer:
     def __init__(self, config={}):
         """Initialize mixer."""
         self.__loops = {}
-        self.__config = config
+        self.__mute = config.get('mute', False)
 
     def update_config(self, **kwargs):
         """Add audio configuration."""
-        self.__config.update(kwargs)
+        self.__mute = kwargs.get('mute', False)
 
     def add(self, name, filename):
         """Set an audio file."""
         self.__loops[name] = pygame.mixer.Sound(filename)
-
-    def add_files(self, group: dict):
-        """Add all files in group to the list of loops."""
-        for name, filename in group.items():
-            self.add(name, filename)
 
     def play_loop(self, name):
         """Play an audio file."""
@@ -44,5 +39,5 @@ class Mixer:
 
     def play(self, name, *args, **kwargs):
         """Play an audio loop."""
-        if not self.__config.get('mute', False):
+        if not self.__mute:
             self.__get_loop(name).play(*args, **kwargs)

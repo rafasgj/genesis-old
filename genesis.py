@@ -2,7 +2,7 @@
 
 from config import config
 from engine import Game, Direction
-from objects.score import Score
+# from objects.score import Score
 
 import stages.gameover, stages.intro, stages.stage1, stages.genesis
 import cli_parser
@@ -34,27 +34,7 @@ if __name__ == "__main__":
 def update_score_enemy(sender, scene):
     """Update player score."""
     scene.get_object('score').add(50)
-    scene.event("play", "enemy_kill")
-
-
-def player_shoot(event, scene):
-    """Create a projectile, where the player object is."""
-    if event.key == pygame.K_SPACE and event.type == pygame.KEYDOWN:
-        player = scene.get_object("player")
-        if player.should_update:
-            x, y, w, _ = player.bounds
-            origin = (x + w - 15, y + 10)
-            target = (x + 2 * w, y + 10)
-            color = (230, 0, 230)
-            scene.event("spawn", "projectile",
-                        init={
-                            "creator": player,
-                            "origin": origin,
-                            "target": target,
-                            "color": color,
-                            "size": 12
-                        })
-            scene.event("play", "player_shoot")
+    scene.event("play_audio", "enemy_kill")
 
 
 def enemy_shoot(scene):
@@ -71,14 +51,14 @@ def enemy_shoot(scene):
                             "origin": ufo.center,
                             "direction": direction,
                             "color": color,
-                            "size": 12
+                            "size": 8
                         })
-            scene.event("play", "player_shoot")
+            scene.event("play_audio", "player_shoot")
 
 
 def player_dead(player, scene):
     """Player is dead."""
-    scene.event("play", "player_kill")
+    scene.event("play_audio", "player_kill")
     if player.lives == 0:
         scene.queue_event(6000, 0, "game_over")
     else:
