@@ -1,7 +1,7 @@
 PALESTRAS=pygame
 
-LATEX=latex
-# LATEX=xelatex
+# LATEX=latex
+LATEX=xelatex
 
 %.pdf: %.tex
 	$(LATEX) $<

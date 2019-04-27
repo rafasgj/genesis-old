@@ -1,0 +1,18 @@
+\usepackage{tikz}
+
+\setbeamercolor{title}{fg=magenta}
+\setbeamercolor{frametitle}{fg=magenta}
+
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+\setbeamerfont{frametitle}{series=\bfseries}
+
+\usebackgroundtemplate{
+    \tikz[remember picture, overlay]\node[opacity=0.2] at (current page.center) {
+         \includegraphics[width=\paperwidth,height=\paperheight]{images/invaders.jpg}
+    };
+}
+
+\setlist[itemize]{
+    itemsep=0.25cm,
+    label={{\footnotesize$\bullet$}}
+}

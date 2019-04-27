@@ -2,7 +2,8 @@
 
 \usecodingsamples{python}
 
-\loadtheme{apple_keynote_black}
+%\loadtheme{apple_keynote_black}
+\loadtheme{invaders}
 
 \title{Desenvolvendo Jogos com pygame}
 \subtitle{}
@@ -16,6 +17,9 @@
 \coverframe
 
 %02
+\bigtitle{Por que \\ jogos?}
+
+%02.a
 \begin{frame}
     \frametitle{Desenvolver Jogos}
 
@@ -43,30 +47,66 @@
 \end{frame}
 
 %03
+\bigtitle{Por que \\ Python?}
+
+%03.a
 \begin{frame}
     \frametitle{Por que Python?}
 
     \begin{itemize}
         \item É divertido.
         \item Permite que a preocupação seja o problema.
-        \item Faz com que tu aprenda uma linguagem que está sendo muito.
+        \item Faz com que tu aprenda uma linguagem que está sendo muito
         utilizada.
     \end{itemize}
 \end{frame}
 
 %04
+\bigtitle{Por que \\ pygame?}
+
+%04.a
 \begin{frame}
     \frametitle{pygame}
 
     \begin{itemize}
-        \item Não é um engine de jogos.
-        \item É uma biblioteca de componentes.
         \item É multi-plataforma (SDL).
         \item Retira as parada chata da programação de jogos.
+        \item Não é um engine de jogos, e queremos programar.
+        \item É uma biblioteca de componentes.
     \end{itemize}
 \end{frame}
 
 %05
+\bigimage{images/moodboard.png}
+
+%06
+\begin{frame}
+    \frametitle{Every saga has a beginning!}
+    \vfill
+    \begin{center}
+    \large \textbf{Durante um teste de rotina, a nave Genesis é trasportada
+    através de um \textit{wormhole} para o quadrante \textit{gamma} da galáxia,
+    e precisa sobreviver à \textit{Guerra do Infinito}.}
+    \vfill
+    \large\textbf{O que era só um dia de testes virou\\uma luta pela sobrevivência.}
+    \end{center}
+    \vfill
+\end{frame}
+
+%06.b
+\begin{frame}
+    \frametitle{Na vida nada se cria...}
+
+    \begin{itemize}
+        \item Gradius/Nemesis
+        \item Farscape
+        \item Star Trek: Voyager
+        \item Um filme muito, muito ruim...
+    \end{itemize}
+\end{frame}
+
+
+%07
 \begin{frame}[fragile]
     \frametitle{Hello World}
 
@@ -90,30 +130,12 @@
     \end{python}
 \end{frame}
 
-%06
-\bigimage{images/moodboard.png}
-
-%07
-\begin{frame}
-    \frametitle{Every saga has a beginning!}
-    \vfill
-    \begin{center}
-    \large \textbf{Durante um teste de rotina, a nave Genesis é trasportada
-    através de um \textit{wormhole} para o quadrante \textit{gamma} da galáxia,
-    e precisa sobreviar à Guerra do Infinito.}
-
-    \vfill
-    \large\textbf{O que era um dia de testes virou uma luta pela sobrevivência.}
-    \end{center}
-    \vfill
-\end{frame}
-
 %08
 \begin{frame}[fragile]
     \frametitle{A janela da aplicação}
 
     \begin{itemize}
-        \item Aplipações pygame podem usar o modo janela ou \textit{fullscreen}.
+        \item Aplicações pygame podem usar o modo janela ou \textit{fullscreen}.
         \item No modo \textit{fullscreen}, o tamanho da janela é a sua resolução.
     \end{itemize}
     \begin{python}
@@ -136,6 +158,7 @@
         python.draw.circle(screen, red, (100,100), 50)
         python.draw.polygon(screen, white, point_list)
         python.draw.rect(screen, white, (x, y, rect_w, rect_h))
+        screen.blit(image, (x, y))
     \end{python}
 \end{frame}
 
@@ -144,13 +167,14 @@
     \frametitle{Um campo de estrelas}
 
     \begin{itemize}
+        \item Todo jogo de plataforma que se preze usa o efeito de \textit{paralaxe}.
         \item Um campo de estrelas com três planos pode ser criado com círculos
         que se movem com velocidades diferentes.
-        \item \textit{List comprehensions} são muito úteis para isso.
+        \item \textit{List comprehensions} e \textit{tuplas} são muito úteis para isso.
     \end{itemize}
 \end{frame}
 
-%11
+%10.a
 \begin{frame}[fragile]
     \frametitle{Um campo de estrelas - Criação}
 
@@ -166,7 +190,7 @@
     \end{python}
 \end{frame}
 
-%12
+%10.b
 \begin{frame}[fragile]
     \frametitle{Um campo de estrelas - Movimentação}
 
@@ -178,10 +202,10 @@
     \end{python}
 \end{frame}
 
-%13
+%10.c
 \bigimage{images/starfield.png}
 
-%14
+%11
 \begin{frame}
     \frametitle{Sprites}
 
@@ -193,10 +217,10 @@
     \end{itemize}
 \end{frame}
 
-%15
+%11.a
 \bigimage{images/f18-big.png}
 
-%16
+%12
 \begin{frame}
     \frametitle{Sprites com animação}
 
@@ -208,7 +232,7 @@
     \end{itemize}
 \end{frame}
 
-%17
+%12.a
 \begin{frame}
     \begin{columns}
         \begin{column}{0.3\textwidth}
@@ -241,98 +265,155 @@
     \end{columns}
 \end{frame}
 
-
-%18
+%13
 \begin{frame}
-    \frametitle{Respondendo a eventos}
+    \frametitle{Tratamento de Eventos}
 
     \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
+        \item pygame oferece um sistema de eventos por \textit{polling}.
+        \item Para criar um \textit{engine} com um \textit{loop} genérico,
+        é preciso permitir que o código cliente seja chamado de volta.
+        \item Um mecanismo desses permite que funções cliente sejam chamadas
+        para eventos do pygame.
+        \item \textit{E para felicidade geral da nação...\\ função são} cidadãs de primeira ordem\textit{!}
     \end{itemize}
 \end{frame}
 
-%19
+%13.b
+\begin{frame}[fragile]
+    \frametitle{O loop de eventos}
+
+    \begin{python}
+# loop genérico, em Game.run()
+while self.running:
+    # handle events
+    for event in pygame.event.get():
+        handle_event(event)
+    \end{python}
+\end{frame}
+
+%13.c
+\begin{frame}[fragile]
+    \frametitle{Respondendo a eventos de teclado}
+
+    \begin{python}
+# my code
+def move(event):
+    """Move player with directional keys."""
+    keys = pygame.key.get_pressed()
+    dx, dy = 0, 0
+    dy = -1 if keys[pygame.K_UP] else 0
+    dy = dy + 1 if keys[pygame.K_DOWN] else dy
+    dx = -1 if keys[pygame.K_LEFT] else 0
+    dx = dx + 1 if keys[pygame.K_RIGHT] else dx
+    player.move = (dx * config.speed, dy * config.speed)
+
+# Configuring the game object
+game.on_key((pygame.K_UP, pygame.K_DOWN,
+             pygame.K_LEFT, pygame.K_RIGHT), move)
+    \end{python}
+\end{frame}
+
+%14
+\bigtitle{E o que mais \\ falta fazer?}
+
+%14.a
 \begin{frame}
-    \frametitle{Efeitos especiais}
+    \frametitle{Um jogo tem tanta coisa...}
 
     \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
+        \item Tratamento de colisões.
+        \item Comportamento de NPCs.
+        \item Trocas de fazes.
+        \item Cenários.
     \end{itemize}
 \end{frame}
 
-%20
+% 15
+\bigtitle{Sem audio?}
+
+%15.b
 \begin{frame}
-    \frametitle{Disparos}
+    \frametitle{pygame Mixer!}
 
     \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
+        \item pygame tem um mixer que, sem configuração, suporta 8 canais de audio.
+        \item Suporte a loops de áudio já embutido.
+        \item Suporte a diversos formatos de áudio.
+        \item Ogg Vorbis é a melhor opção.
+        \item E a internet está cheia de loops \textit{royalty free}...
     \end{itemize}
 \end{frame}
 
-%17
-\begin{frame}
-    \frametitle{Tratamento de Colisões}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%18
-\begin{frame}
-    \frametitle{Vida e morte no espaço}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%19
-\begin{frame}
-    \frametitle{Escrevendo na tela}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%19
-\begin{frame}
-    \frametitle{Um pouco de som}
-
-    \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
-    \end{itemize}
-\end{frame}
-
-%20
+%16
 \begin{frame}
     \frametitle{Quão produtivo é o pygame?}
 
+    \vfill
+    \begin{center}
+        Você tem 24h para...
+        \begin{itemize}
+            \item Aprender a usar o pygame.
+            \item Escrever uma demonstração.
+            \item Criar os \textit{slides} de uma palestra.
+            \item Apresentar a palastra.
+        \end{itemize}
+    \end{center}
+    \vfill
+\end{frame}
+
+%16.a
+\begin{frame}
+    \frametitle{Quão produtivo é o pygame?}
+
+    \vfill
+    \begin{center}
+        E ainda por cima...
+        \begin{itemize}
+            \item Ministrar três horas de aula.
+            \item Dirigir de Porto Alegre a Pelotas (4h).
+            \vfill
+            \item Passear com os cachorros!
+        \end{itemize}
+    \end{center}
+    \vfill
+\end{frame}
+
+% 16.b
+\bigtitle{\color{magenta} {\Huge \textbf{E DEU CERTO!}}}
+
+% 17
+\bigtitle{E agora? \\ Pra onde vou?}
+
+% 17.a
+\bigtitle{\url{https://python.org} \vfill \url{https://pygame.org}}
+
+%18
+\begin{frame}
+    \frametitle{Próximos Passos}
+
     \begin{itemize}
-        \item A first level items.
-        \item Another first level items.
+        \item Desenvolver um engine para criação de jogos 2D!
+        \item Para ensinar programação orientada a objetos com Python.
+        \item Para ensinar \textit{design} de jogos.
+        \item Para ensinar criação de roteiros de jogos.
     \end{itemize}
 \end{frame}
 
-%21
-\bigtext{Essa palestra e esse jogo foram (re)feitos em 48h.}
+%18.a
+\bigtitle{\Large E para criar jogos, né?}
 
-%22
-\bigtext{E eu dormi... ;-)}
+%18.b
+\bigtitle{\large Na verdade... \\ Esse nunca foi o objetivo...}
 
-%23
-\bigtext{\url{https://pygame.org}}
+%19
+\bigtitle{\Large Mas nem uma demonstração?}
 
-%24
-\finalframe[Obrigado!]{
+%19.b
+\bigtitle{\large \url{https://github.com/rafasgj/genesis}}
+
+%20
+\finalframe[Muito Obrigado!]{
     \url{mailto:rafasgj@gmail.com}\\
     \url{https://rafaeljeffman.com/tchelinux}
 }
