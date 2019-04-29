@@ -38,6 +38,10 @@ def create_scene(game_config):
                     "vertical": False
                 }
             },
+            "slow_controller": {
+                "class": "engine.controllers.ConstantController",
+                "init": {"dx": RandomInt(1, 3), "dy": 0}
+            },
             "const_controller": {
                 "class": "engine.controllers.ConstantController",
                 "init": {"dx": RandomInt(4, 7), "dy": 0}
@@ -116,7 +120,7 @@ def create_scene(game_config):
                 "init": {
                     "canvas": canvas_size,
                     "image": 'media/images/asteroid.png',
-                    "controller": SceneBehavior("const_controller"),
+                    "controller": SceneBehavior("slow_controller"),
                     "scale": Random(0.2, 0.75),
                     "bounding_shape": "ellipse"
                 }
