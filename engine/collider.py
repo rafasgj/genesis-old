@@ -15,6 +15,8 @@ class Collider:
         @staticmethod
         def __distance_to_ellipse(ellipse, point):
             h, k, rx, ry = ellipse
+            rx //= 2
+            ry //= 2
             a, b = point
             return (a - h) ** 2 / (rx * rx) + (b - k) ** 2 / (ry * ry)
 
@@ -37,6 +39,12 @@ class Collider:
                       (x + width, y), (x + width, y + height)):
                 if cls.ellipse_point(ellipse, p):
                     return True
+            return False
+
+        @classmethod
+        def ellipse_ellipse(cls, e1, e2):
+            """Verify collision between two ellipses."""
+            # TODO: implement it!
             return False
 
         @classmethod
@@ -152,7 +160,7 @@ class Collider:
         "rect_circle": __Algo.invert(__Algo.circle_rect),
         "rect_rect": __Algo.rect_rect,
         "circle_circle": __Algo.circle_circle,
-        "ellipse_ellipse": __Algo.circle_circle,
+        "ellipse_ellipse": __Algo.ellipse_ellipse,
         "line_line": __Algo.line_line,
         "line_circle": lambda a, b: False,
         "circle_line": __Algo.invert(lambda a, b: False),
@@ -187,3 +195,14 @@ class Collider:
     def collide_with(self, object):
         """Handle collision event."""
         raise NotImplementedError("Subclasses must implement collide_with().")
+
+    @property
+    def bounds(self):
+        """Query object bounds."""
+        x, y = self.position
+        cx, cy = self.center
+        w, h = self.dimension
+        case = {Collider.ELLIPSE: (cx, cy, w, h),
+                Collider.RECT: (x, y, w, h),
+                Collider.CIRCLE: (cx, cy, min(w, h))}
+        return case[self.bounding_shape]
