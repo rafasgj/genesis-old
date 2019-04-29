@@ -20,7 +20,7 @@ class Enemy(Controllable, Collider, Movable, GameObject):
         Collider.__init__(self, kw.get('bounding_shape', Collider.RECT))
         Movable.__init__(self, kw.get('position', (canvas[0] + 10,
                                       randint(50, canvas[1] - 50))))
-        GameObject.__init__(self, GameObject.Priority.NPC)
+        GameObject.__init__(self, kw.get('priority', GameObject.Priority.NPC))
         self. __sprite = Sprite(image, **kw)
 
     def update(self, bounds):

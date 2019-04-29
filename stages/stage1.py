@@ -3,7 +3,7 @@
 from config import config
 from util.notifications import after
 
-from engine import (SceneBehavior, PropertyReference, SceneEvent,
+from engine import (SceneBehavior, PropertyReference, SceneEvent, GameObject,
                     GameFont, TheGame, Direction, SceneObject, GameVariable)
 from engine.functions import RandomInt, Choice, Random
 
@@ -112,6 +112,7 @@ def create_scene(game_config):
                     "controller": SceneBehavior(Choice("sin_controller",
                                                        "const_controller")),
                     "animate": True,
+                    "cast_shadow": True,
                     "bounding_shape": "ellipse"
                 }
             },
@@ -122,7 +123,8 @@ def create_scene(game_config):
                     "image": 'media/images/asteroid.png',
                     "controller": SceneBehavior("slow_controller"),
                     "scale": Random(0.2, 0.75),
-                    "bounding_shape": "ellipse"
+                    "bounding_shape": "ellipse",
+                    "priority": GameObject.Priority.DEFAULT,
                 }
             },
             "score": {
@@ -141,8 +143,8 @@ def create_scene(game_config):
         "events": [
             (0, 0, "play_audio", "background_music"),
             (3000, 750, "spawn", "ufo"),
-            (2000, 5000, "spawn", "asteroid"),
-            (8000, 1000, "call", genesis.enemy_shoot)
+            (2000, 6000, "spawn", "asteroid"),
+            (8000, 1000, "call", genesis.enemy_shoot),
         ],
         "before": [
             ("spawn", ["background", "player", "score", "life_stamp"]),
