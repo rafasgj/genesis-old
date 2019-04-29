@@ -5,7 +5,7 @@ from util.notifications import after
 
 from engine import (SceneBehavior, PropertyReference, SceneEvent,
                     GameFont, TheGame, Direction, SceneObject, GameVariable)
-from engine.functions import RandomInt, Choice
+from engine.functions import RandomInt, Choice, Random
 
 import pygame
 
@@ -53,7 +53,6 @@ def create_scene(game_config):
                             pygame.K_LEFT: {"dx": -1, "dy": 0},
                             pygame.K_RIGHT: {"dx": +1, "dy": 0},
                             pygame.K_SPACE: SceneEvent("spawn", "projectile"),
-                            'a': SceneEvent("spawn", "projectile")
                         },
                         "up": {
                             pygame.K_UP: {"dx": 0, "dy": +1},
@@ -71,7 +70,7 @@ def create_scene(game_config):
                 "init": {
                     "position": (200, 400),
                     "controller": SceneBehavior('keyboard'),
-                    "speed": config.player_speed,
+                    "speed": config.player_speed
                 },
                 "notifications": [
                     ("die", after, genesis.player_dead)
@@ -102,19 +101,32 @@ def create_scene(game_config):
                 }
             },
             "ufo": {
-                "class": "objects.enemy.Enemy",
+                "class": "objects.enemy.KillableEnemy",
                 "init": {
                     "canvas": canvas_size,
                     "image": 'media/images/ufo_spin.gif',
                     "controller": SceneBehavior(Choice("sin_controller",
-                                                       "const_controller"))
+                                                       "const_controller")),
+                    "animate": True,
+                    "bounding_shape": "ellipse"
+                }
+            },
+            "asteroid": {
+                "class": "objects.enemy.Enemy",
+                "init": {
+                    "canvas": canvas_size,
+                    "image": 'media/images/asteroid.png',
+                    "controller": SceneBehavior("const_controller"),
+                    "scale": Random(0.2, 0.75),
+                    "bounding_shape": "ellipse"
                 }
             },
             "score": {
                 "class": "objects.score.Score",
                 "init": {
                     "font": GameFont("genesis.normal"),
-                    "position": (20, 5)
+                    "position": (20, 5),
+                    "animate": "True"
                 },
                 "bind": [
                     ("after", GameVariable('score'), "add",
@@ -125,6 +137,7 @@ def create_scene(game_config):
         "events": [
             (0, 0, "play_audio", "background_music"),
             (3000, 750, "spawn", "ufo"),
+            (2000, 5000, "spawn", "asteroid"),
             (8000, 1000, "call", genesis.enemy_shoot)
         ],
         "before": [

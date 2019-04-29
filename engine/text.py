@@ -64,9 +64,9 @@ class Font:
     ITALIC = (False, True)
     BOLDITALIC = (True, True)
 
-    def __init__(self, name, size, modifiers=REGULAR):
+    def __init__(self, filename, size, modifiers=REGULAR):
         """Initialize font object."""
-        self.__font = pygame.font.Font(name, size)
+        self.__font = pygame.font.Font(filename, size)
 
     def __create_surface(self, text, **kwargs):
         color = kwargs.get('color', (255, 255, 255))

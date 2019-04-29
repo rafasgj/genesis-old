@@ -10,6 +10,14 @@ def RandomInt(*args):
     return Command(random.randint, *args)
 
 
+def Random(*args):
+    """Return a random int number between a and b."""
+    def random_in(min, max):
+        min, max = (min, max) if min < max else (max, min)
+        return random.random() * (max - min) + min
+    return Command(random_in, *args)
+
+
 def Choice(*args):
     """Return a random element from the given list."""
     return Command(random.choice, args)

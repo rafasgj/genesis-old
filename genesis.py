@@ -31,10 +31,10 @@ if __name__ == "__main__":
     game.run("intro")
 
 
-def update_score_enemy(sender, scene):
-    """Update player score."""
-    scene.get_object('score').add(50)
-    scene.event("play_audio", "enemy_kill")
+# def update_score_enemy(sender, scene):
+#     """Update player score."""
+#     scene.get_object('score').add(50)
+#     scene.event("play_audio", "enemy_kill")
 
 
 def enemy_shoot(scene):

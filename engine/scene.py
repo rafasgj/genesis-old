@@ -135,8 +135,8 @@ class Scene:
         try:
             obj = cls(**params)
         except Exception as e:
-            msg = "Error intsantiating '{class}'".format(**description)
-            raise Exception(msg) from e
+            msg = "Error instantiating '{class}'\n\t{e}"
+            raise Exception(msg.format(e=e, **description)) from e
         # TODO: Rename.
         for m, bind, fn in description.get('notifications', []):
             meth = getattr(obj, m)
@@ -212,7 +212,7 @@ class Scene:
             self.__events[i] = (t, n, *e)
         self.__events = [(t, *e) for t, *e in self.__events if t > 0]
 
-    def queue_event(self, time, repeat, event, *args):
+    def queue_event(self, time, repeat, event, *args, **kwargs):
         """Queue an event to the scene."""
         self.__events.append((time, repeat, event, *args))
 

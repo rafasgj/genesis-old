@@ -9,7 +9,7 @@ from .explosion import Explosion
 from .killable import Killable
 
 
-class Enemy(Controllable, Collider, Movable, Killable, GameObject):
+class Enemy(Controllable, Collider, Movable, GameObject):
     """Models a simple NPC."""
 
     def __init__(self, canvas, image, **kw):
@@ -17,34 +17,25 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
         Controllable.__init__(self,
                               kw.get('controller',
                                      ConstantController(-1, 0)))
-        Collider.__init__(self, kw.get('shape', Collider.RECT))
+        Collider.__init__(self, kw.get('bounding_shape', Collider.RECT))
         Movable.__init__(self, kw.get('position', (canvas[0] + 10,
                                       randint(50, canvas[1] - 50))))
-        Killable.__init__(self, Explosion.SMALL, time_scale=0.5)
         GameObject.__init__(self, GameObject.Priority.NPC)
-        self. __sprite = Sprite(image,
-                                animate=kw.get('animate', False),
-                                cast_shadow=kw.get('cast_shadow', True))
+        self. __sprite = Sprite(image, **kw)
 
     def update(self, bounds):
         """Update enemy position."""
-        if self.should_update:
-            try:
-                dx, dy = next(self.controller)
-                dx *= -1
-                self.move(dx, dy)
-                self.offlimits(bounds)
-            except Exception as e:
-                pass
-        else:
-            Killable.update(self, bounds)
+        try:
+            dx, dy = next(self.controller)
+            dx *= -1
+            self.move(dx, dy)
+            self.offlimits(bounds)
+        except Exception as e:
+            pass
 
     def draw(self, screen):
         """Draw enemy on the screen."""
-        if self.should_update:
-            self.__sprite.draw(screen, self.position)
-        else:
-            Killable.draw(self, screen)
+        self.__sprite.draw(screen, self.position)
 
     def offlimits(self, limits):
         """Take action when object is off-limits, return if needs update."""
@@ -58,6 +49,46 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
         self.move(0, dy)
 
     def collide_with(self, object):
+        """Indestructible enemy."""
+        pass
+
+    @property
+    def center(self):
+        """Query object bounds."""
+        x, y = self.position
+        _, _, w, h = self.__sprite.bounds
+        return (x + w // 2, y + h // 2)
+
+    @property
+    def dimension(self):
+        """Return the object dimension."""
+        _, _, w, h = self.__sprite.bounds
+        return (w, h)
+
+
+class KillableEnemy(Enemy, Killable):
+    """Models an enemy that can be killed."""
+
+    def __init__(self, canvas, image, **kw):
+        """Initialize Killable Enemy object."""
+        Enemy.__init__(self, canvas, image, **kw)
+        Killable.__init__(self, Explosion.SMALL, time_scale=0.5)
+
+    def draw(self, screen):
+        """Draw enemy on the screen."""
+        if self.should_update:
+            Enemy.draw(self, screen)
+        else:
+            Killable.draw(self, screen)
+
+    def update(self, bounds):
+        """Update enemy position."""
+        if self.should_update:
+            Enemy.update(self, bounds)
+        else:
+            Killable.update(self, bounds)
+
+    def collide_with(self, object):
         """Enemy wal killed."""
         if self.should_update:
             will_die = isinstance(object, Projectile) and \
@@ -65,16 +96,3 @@ class Enemy(Controllable, Collider, Movable, Killable, GameObject):
             if will_die or isinstance(object, Player):
                 self.die()
                 self.should_collide = False
-
-    @property
-    def bounds(self):
-        """Query object bounds."""
-        x, y = self.position
-        _, _, w, h = self.__sprite.bounds
-        return (x, y, w, h)
-
-    @property
-    def center(self):
-        """Query object bounds."""
-        x, y, w, h = self.bounds
-        return (x + w // 2, y + h // 2)
