@@ -191,8 +191,9 @@ class Scene:
         for (_, object) in self.__game_objects:
             object.update(bounds)
         self.__game_objects = [(n, o) for (n, o) in self.__game_objects
-                               if isinstance(o, NonRemovable) or
-                               not hasattr(o, 'visible') or o.visible]
+                               if (isinstance(o, NonRemovable) or
+                               not hasattr(o, 'visible') or o.visible) and
+                               not o.can_eliminate]
 
     def draw(self, window):
         """Draw scene on window."""

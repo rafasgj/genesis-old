@@ -6,7 +6,7 @@ Genesis = {
     "fps": 60,
     "window": {
         "size": "minimum",
-        "minimum": (1024, 768),
+        "minimum": (800, 600),
         "maximum": (1920, 1080),
         "fullscreen": False
     },

@@ -24,6 +24,7 @@ class GameObject(Bindable):
         Bindable.__init__(self)
         self.__priority = priority.value \
             if isinstance(priority, Enum) else priority
+        self.__valid = True
 
     def update(self, bounds):
         """Update the object state."""
@@ -41,3 +42,12 @@ class GameObject(Bindable):
     def priority(self):
         """Return the object priority."""
         return self.__priority
+
+    @property
+    def can_eliminate(self):
+        """Query if the object can be eliminated."""
+        return not self.__valid
+
+    def destroy(self):
+        """Mark the object for elimination."""
+        self.__valid = False

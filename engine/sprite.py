@@ -7,20 +7,24 @@ from .lib.GIFImage import GIFImage
 class Sprite:
     """Define a game sprite."""
 
-    def __init__(self, image, animate=False, **kw):
+    def __init__(self, image, **kw):
         """Initialize a sprite object."""
-        if animate:
+        scale = self.__scale = kw.get('scale', 1)
+        ang = self.__rotation = kw.get('rotate', 0)
+        self.__animate = kw.get('animate', False)
+        if self.__animate:
             self.__image = GIFImage(image, **kw)
+            x, y, w, h = self.__image.get_rect()
         else:
-            scale = kw.get('scale', 1)
-            rotate = kw.get('rotate', 0)
             self.__image = pygame.image.load(image)
-            if scale != 1:
-                w, h = self.__image.get_size()
-                scale = (int(w * scale), int(h * scale))
-                self.__image = pygame.transform.scale(self.__image, scale)
-                self.__image = pygame.transform.rotate(self.__image, rotate)
-        self.__animate = animate
+            _, _, w, h = self.__image.get_rect()
+            w *= scale
+            h *= scale
+            cx, cy = self.__image.get_rect().center
+            self.__image = pygame.transform.rotozoom(self.__image, ang, scale)
+            x, y, a, b = self.__image.get_rect(center=(cx, cy))
+            self.__image.get_rect().center = (x + a // 2, y + b // 2)
+        self.__bounds = (x, y, w, h, ang, scale)
 
     def draw(self, screen, position):
         """Draw the sprite to the screen."""
@@ -33,9 +37,27 @@ class Sprite:
     @property
     def bounds(self):
         """Compute sprite bounds."""
-        return self.__image.get_rect()
+        return self.__bounds
+
+    @property
+    def center(self):
+        """Return  sprite center."""
+        return self.__image.get_rect().center
 
     @property
     def duration(self):
         """Retrieve animation duration, in miliseconds."""
-        return self.__image.duration()
+        if self.__animate:
+            return self.__image.duration()
+        else:
+            return 0
+
+    @property
+    def scale(self):
+        """Return the scale applied to the original image."""
+        return self.__scale
+
+    @property
+    def rotation(self):
+        """Return the rotation applied to the original image."""
+        return self.__rotation

@@ -21,7 +21,9 @@ class Enemy(Controllable, Collider, Movable, GameObject):
         Movable.__init__(self, kw.get('position', (canvas[0] + 10,
                                       randint(50, canvas[1] - 50))))
         GameObject.__init__(self, kw.get('priority', GameObject.Priority.NPC))
-        self. __sprite = Sprite(image, **kw)
+        self.__sprite = Sprite(image, **kw)
+        x, y, *_ = self.__sprite.bounds
+        self.move(x, y)
 
     def update(self, bounds):
         """Update enemy position."""
@@ -32,6 +34,9 @@ class Enemy(Controllable, Collider, Movable, GameObject):
             self.offlimits(bounds)
         except Exception as e:
             pass
+        x, _, w, *_ = self.bounds
+        if x + 2 * w < 0:
+            self.destroy()
 
     def draw(self, screen):
         """Draw enemy on the screen."""
@@ -55,14 +60,18 @@ class Enemy(Controllable, Collider, Movable, GameObject):
     @property
     def center(self):
         """Query object bounds."""
-        x, y = self.position
-        _, _, w, h = self.__sprite.bounds
-        return (x + w // 2, y + h // 2)
+        return tuple(map(lambda e: sum(e),
+                         zip(self.position, self.__sprite.center)))
+
+    @property
+    def rotation(self):
+        """Return the sprite rotation."""
+        return self.__sprite.rotation
 
     @property
     def dimension(self):
         """Return the object dimension."""
-        _, _, w, h = self.__sprite.bounds
+        _, _, w, h, *_ = self.__sprite.bounds
         return (w, h)
 
 

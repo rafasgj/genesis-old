@@ -125,6 +125,9 @@ def create_scene(game_config):
                     "scale": Random(0.2, 0.75),
                     "bounding_shape": "ellipse",
                     "priority": GameObject.Priority.DEFAULT,
+                    "cast_shadow": True,
+                    "position": (canvas_size[0] + 10, 50),
+                    "rotate": RandomInt(0, 60),
                 }
             },
             "score": {
@@ -143,7 +146,7 @@ def create_scene(game_config):
         "events": [
             (0, 0, "play_audio", "background_music"),
             (3000, 750, "spawn", "ufo"),
-            (2000, 6000, "spawn", "asteroid"),
+            (2000, 20000, "spawn", "asteroid"),
             (8000, 1000, "call", genesis.enemy_shoot),
         ],
         "before": [

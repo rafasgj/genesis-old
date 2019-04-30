@@ -18,7 +18,7 @@ class Explosion(Hideable, GameObject):
         ts = kwargs.get('time_scale', 1.0)
         self.__sprite = Sprite(type, animate=True, time_scale=ts, loop=True)
         self.__ttl = self.__sprite.duration + pygame.time.get_ticks()
-        _, _, w, h = list(map(lambda i: i // 2, self.__sprite.bounds))
+        _, _, w, h, *_ = list(map(lambda i: i // 2, self.__sprite.bounds))
         x, y = position
         self.__position = (x - w, y - h)
         self.should_collide = False

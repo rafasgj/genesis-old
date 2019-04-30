@@ -27,6 +27,7 @@ class Player(Collider, Controllable, Movable, Killable, GameObject,
 
     def collide_with(self, object):
         """Enemy wal killed."""
+        return
         if isinstance(object, Projectile) and \
            isinstance(self, object.creator):
             return
@@ -89,7 +90,7 @@ class Player(Collider, Controllable, Movable, Killable, GameObject,
     def bounds(self):
         """Query object bounds."""
         x, y = self.position
-        _, _, w, h = self.__sprite.bounds
+        _, _, w, h, *_ = self.__sprite.bounds
         return (x, y, w, h)
 
     @property

@@ -1,6 +1,6 @@
 """Algoritms for collision detection."""
 
-from math import copysign
+from math import copysign, sin, cos, pi
 
 
 def sign(x):
@@ -14,22 +14,28 @@ class Collider:
     class __Algo:
         @staticmethod
         def __distance_to_ellipse(ellipse, point):
-            h, k, rx, ry = ellipse
-            rx //= 2
-            ry //= 2
-            a, b = point
-            return (a - h) ** 2 / (rx * rx) + (b - k) ** 2 / (ry * ry)
+            x, y = point
+            h, k, rx, ry, a = ellipse
+            rx, ry = (rx // 2, ry // 2) if rx <= ry else (ry // 2, rx // 2)
+            rad = -1 * a * pi / 180
+            sina = sin(rad)
+            cosa = cos(rad)
+            xh = x - h
+            yk = y - k
+            t1 = xh * cosa - yk * sina
+            t2 = xh * sina + yk * cosa
+            return ((t1 * t1) / (rx * rx)) + ((t2 * t2) / (ry * ry))
 
         @classmethod
         def ellipse_point(cls, ellipse, point):
             """Verify colision between an ellipse and a rectangle."""
-            return cls.__distance_to_ellipse(ellipse, point) <= 0.9
+            return cls.__distance_to_ellipse(ellipse, point) <= 0.95
 
         @classmethod
         def ellipse_circle(cls, ellipse, circle):
             """Verify colision between an ellipse and a rectangle."""
             x, y, r = circle
-            return cls.__distance_to_ellipse(ellipse, (x, y)) <= 1.95 * r
+            return cls.__distance_to_ellipse(ellipse, (x, y)) <= (1 + r)
 
         @classmethod
         def ellipse_rect(cls, ellipse, rect):
@@ -37,7 +43,8 @@ class Collider:
             x, y, width, height = rect
             for p in ((x, y), (x, y + height),
                       (x + width, y), (x + width, y + height)):
-                if cls.ellipse_point(ellipse, p):
+                d = cls.__distance_to_ellipse(ellipse, p)
+                if d <= 0.95:
                     return True
             return False
 
@@ -202,7 +209,9 @@ class Collider:
         x, y = self.position
         cx, cy = self.center
         w, h = self.dimension
-        case = {Collider.ELLIPSE: (cx, cy, w, h),
+        a = self.rotation
+        case = {Collider.ELLIPSE: (cx, cy, w, h, a),
                 Collider.RECT: (x, y, w, h),
-                Collider.CIRCLE: (cx, cy, min(w, h))}
+                Collider.CIRCLE: (cx, cy, min(w, h) // 2),
+                }
         return case[self.bounding_shape]
