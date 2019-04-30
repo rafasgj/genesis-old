@@ -2,6 +2,7 @@
 
 import pygame
 from .lib.GIFImage import GIFImage
+from .lib.shadows import add_shadow
 
 
 class Sprite:
@@ -12,6 +13,7 @@ class Sprite:
         scale = self.__scale = kw.get('scale', 1)
         ang = self.__rotation = kw.get('rotate', 0)
         self.__animate = kw.get('animate', False)
+        self.__shadow = kw.get('shadow', None)
         if self.__animate:
             self.__image = GIFImage(image, **kw)
             x, y, w, h = self.__image.get_rect()
@@ -24,6 +26,11 @@ class Sprite:
             self.__image = pygame.transform.rotozoom(self.__image, ang, scale)
             x, y, a, b = self.__image.get_rect(center=(cx, cy))
             self.__image.get_rect().center = (x + a // 2, y + b // 2)
+            blt = self.__image
+            if self.__shadow:
+                offset, scale, amb = self.__shadow
+                blt = add_shadow(blt, offset, shadow_scale=scale, ambience=amb)
+            self.__image = blt
         self.__bounds = (x, y, w, h, ang, scale)
 
     def draw(self, screen, position):

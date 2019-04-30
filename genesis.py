@@ -2,7 +2,8 @@
 
 from config import config
 from engine import Game, Direction
-# from objects.score import Score
+
+from objects.enemy import Enemy
 
 import stages.gameover, stages.intro, stages.stage1, stages.genesis
 import cli_parser
@@ -51,7 +52,8 @@ def enemy_shoot(scene):
                             "origin": ufo.center,
                             "direction": direction,
                             "color": color,
-                            "size": 8
+                            "size": 8,
+                            "ignore_colision": (Enemy,),
                         })
             scene.event("play_audio", "player_shoot")
 

@@ -27,7 +27,6 @@ class Player(Collider, Controllable, Movable, Killable, GameObject,
 
     def collide_with(self, object):
         """Enemy wal killed."""
-        return
         if isinstance(object, Projectile) and \
            isinstance(self, object.creator):
             return

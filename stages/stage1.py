@@ -14,7 +14,7 @@ import genesis
 
 def create_scene(game_config):
     """Return the scene configuration."""
-    width, _ = canvas_size = game_config['canvas_size']
+    canvas_width, canvas_height = canvas_size = game_config['canvas_size']
     scene = {
         "name": "stage1",
         "audio": {
@@ -31,7 +31,7 @@ def create_scene(game_config):
             "sin_controller": {
                 "class": "engine.controllers.SinController",
                 "init": {
-                    "length": width,
+                    "length": canvas_width,
                     "freq": 1,
                     "amp": 1,
                     "speed": 1,
@@ -112,8 +112,8 @@ def create_scene(game_config):
                     "controller": SceneBehavior(Choice("sin_controller",
                                                        "const_controller")),
                     "animate": True,
-                    "cast_shadow": True,
-                    "bounding_shape": "ellipse"
+                    "shadow": ((30, 20), 0.8, 0.5),   # offset, scale, ambience
+                    "bounding_shape": "ellipse",
                 }
             },
             "asteroid": {
@@ -125,9 +125,8 @@ def create_scene(game_config):
                     "scale": Random(0.2, 0.75),
                     "bounding_shape": "ellipse",
                     "priority": GameObject.Priority.DEFAULT,
-                    "cast_shadow": True,
-                    "position": (canvas_size[0] + 10, 50),
                     "rotate": RandomInt(0, 60),
+                    "shadow": ((30, 20), 0.8, 0.5),   # offset, scale, ambience
                 }
             },
             "score": {

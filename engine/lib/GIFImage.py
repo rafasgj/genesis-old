@@ -11,7 +11,7 @@ class GIFImage(object):
 
     def __init__(self, filename, pos=(0, 0), **kwargs):
         """Initialize a new sprite object."""
-        self.cast_shadow = kwargs.get('cast_shadow', False)
+        self.__shadow = kwargs.get('shadow', None)
         self.loop = kwargs.get('loop', True)
         self.time_scale = kwargs.get('time_scale', 1.0)
         self.scale = kwargs.get('scale', 1.0)
@@ -104,8 +104,9 @@ class GIFImage(object):
 
                 self.ptime = time()
         blt = self.frames[self.cur][0]
-        if self.cast_shadow:
-            blt = add_shadow(blt, (30, 20), shadow_scale=0.8, ambience=0.5)
+        if self.__shadow:
+            offset, scale, amb = self.__shadow
+            blt = add_shadow(blt, offset, shadow_scale=scale, ambience=amb)
         screen.blit(blt, pos)
 
     def seek(self, frame):
